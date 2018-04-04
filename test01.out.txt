@@ -1,0 +1,162 @@
+GRAMMAR: edu/stanford/nlp/models/lexparser/englishFactored.ser.gz
+
+(ROOT
+  (S
+    (VP (NN Offer)
+      (NP (DT a) (JJ low-cost) (JJ renin-angiotensin-aldosterone) (NN system) (NN antagonist))
+      (PP (TO to)
+        (NP
+          (NP
+            (NP (NNS people))
+            (PP (IN with)
+              (NP (NNP CKD)
+                (CC and)
+                (NNP diabetes))))
+          (CC and)
+          (NP
+            (NP (DT an) (NNP ACR))
+            (PP (IN of)
+              (NP
+                (NP (CD 3) (NN mg/mmol))
+                (CC or)
+                (NP (JJR more)
+                  (PRN (-LRB- -LRB-)
+                    (NP
+                      (NP (NNP ACR) (NN category) (NNP A2))
+                      (CC or)
+                      (NP (NNP A3)))
+                    (-RRB- -RRB-)))))))))
+    (. .)))
+
+[root(ROOT-0, Offer-1), det(antagonist-6, a-2), amod(antagonist-6, low-cost-3), amod(antagonist-6, renin-angiotensin-aldosterone-4), compound(antagonist-6, system-5), dobj(Offer-1, antagonist-6), case(people-8, to-7), nmod:to(Offer-1, people-8), case(CKD-10, with-9), nmod:with(people-8, CKD-10), cc(CKD-10, and-11), nmod:with(people-8, diabetes-12), conj:and(CKD-10, diabetes-12), cc(people-8, and-13), det(ACR-15, an-14), nmod:to(Offer-1, ACR-15), conj:and(people-8, ACR-15), case(mg/mmol-18, of-16), nummod(mg/mmol-18, 3-17), nmod:of(ACR-15, mg/mmol-18), cc(mg/mmol-18, or-19), nmod:of(ACR-15, more-20), conj:or(mg/mmol-18, more-20), compound(A2-24, ACR-22), compound(A2-24, category-23), dep(more-20, A2-24), cc(A2-24, or-25), dep(more-20, A3-26), conj:or(A2-24, A3-26)]
+
+[Offer/NN, a/DT, low-cost/JJ, renin-angiotensin-aldosterone/JJ, system/NN, antagonist/NN, to/TO, people/NNS, with/IN, CKD/NNP, and/CC, diabetes/NNP, and/CC, an/DT, ACR/NNP, of/IN, 3/CD, mg/mmol/NN, or/CC, more/JJR, -LRB-/-LRB-, ACR/NNP, category/NN, A2/NNP, or/CC, A3/NNP, -RRB-/-RRB-, ./.]
+
+(ROOT
+  (S
+    (VP (NN Offer)
+      (NP (DT a) (JJ low-cost) (JJ renin-angiotensin-aldosterone) (NN system) (NN antagonist))
+      (PP (TO to)
+        (NP
+          (NP
+            (NP (NNS people))
+            (PP (IN with)
+              (NP
+                (NP (NNP CKD))
+                (CC and)
+                (NP (NN hypertension)))))
+          (CC and)
+          (NP
+            (NP (DT an) (NNP ACR))
+            (PP (IN of)
+              (NP
+                (NP (CD 30) (NN mg/mmol))
+                (CC or)
+                (NP
+                  (NP (JJR more))
+                  (-LRB- -LRB-)
+                  (NP (NNP ACR) (NN category) (NNP A3))
+                  (-RRB- -RRB-))))))))
+    (. .)))
+
+[root(ROOT-0, Offer-1), det(antagonist-6, a-2), amod(antagonist-6, low-cost-3), amod(antagonist-6, renin-angiotensin-aldosterone-4), compound(antagonist-6, system-5), dobj(Offer-1, antagonist-6), case(people-8, to-7), nmod:to(Offer-1, people-8), case(CKD-10, with-9), nmod:with(people-8, CKD-10), cc(CKD-10, and-11), nmod:with(people-8, hypertension-12), conj:and(CKD-10, hypertension-12), cc(people-8, and-13), det(ACR-15, an-14), nmod:to(Offer-1, ACR-15), conj:and(people-8, ACR-15), case(mg/mmol-18, of-16), nummod(mg/mmol-18, 30-17), nmod:of(ACR-15, mg/mmol-18), cc(mg/mmol-18, or-19), nmod:of(ACR-15, more-20), conj:or(mg/mmol-18, more-20), compound(A3-24, ACR-22), compound(A3-24, category-23), dep(more-20, A3-24)]
+
+[Offer/NN, a/DT, low-cost/JJ, renin-angiotensin-aldosterone/JJ, system/NN, antagonist/NN, to/TO, people/NNS, with/IN, CKD/NNP, and/CC, hypertension/NN, and/CC, an/DT, ACR/NNP, of/IN, 30/CD, mg/mmol/NN, or/CC, more/JJR, -LRB-/-LRB-, ACR/NNP, category/NN, A3/NNP, -RRB-/-RRB-, ./.]
+
+(ROOT
+  (NP
+    (NP
+      (NP
+        (NP (NN Offer))
+        (NP (DT a) (JJ low-cost) (JJ renin-angiotensin-aldosterone) (NN system) (NN antagonist)))
+      (PP (TO to)
+        (NP
+          (NP
+            (NP (NNS people))
+            (PP (IN with)
+              (NP (NNP CKD))))
+          (CC and)
+          (NP
+            (NP (DT an) (NNP ACR))
+            (PP (IN of)
+              (NP (CD 70)))))))
+    (ADJP
+      (ADJP (JJ mg/mmol)
+        (CC or)
+        (JJR more))
+      (PRN (-LRB- -LRB-)
+        (PP
+          (ADVP (RB irrespective))
+          (IN of)
+          (NP
+            (NP (NN hypertension))
+            (CC or)
+            (NP (JJ cardiovascular) (NN disease))))
+        (-RRB- -RRB-)))
+    (. .)))
+
+[root(ROOT-0, Offer-1), det(antagonist-6, a-2), amod(antagonist-6, low-cost-3), amod(antagonist-6, renin-angiotensin-aldosterone-4), compound(antagonist-6, system-5), dep(Offer-1, antagonist-6), case(people-8, to-7), nmod:to(Offer-1, people-8), case(CKD-10, with-9), nmod:with(people-8, CKD-10), cc(people-8, and-11), det(ACR-13, an-12), nmod:to(Offer-1, ACR-13), conj:and(people-8, ACR-13), case(70-15, of-14), nmod:of(ACR-13, 70-15), amod(Offer-1, mg/mmol-16), cc(mg/mmol-16, or-17), amod(Offer-1, more-18), conj:or(mg/mmol-16, more-18), case(hypertension-22, irrespective-20), mwe(irrespective-20, of-21), dep(mg/mmol-16, hypertension-22), cc(hypertension-22, or-23), amod(disease-25, cardiovascular-24), dep(mg/mmol-16, disease-25), conj:or(hypertension-22, disease-25)]
+
+[Offer/NN, a/DT, low-cost/JJ, renin-angiotensin-aldosterone/JJ, system/NN, antagonist/NN, to/TO, people/NNS, with/IN, CKD/NNP, and/CC, an/DT, ACR/NNP, of/IN, 70/CD, mg/mmol/JJ, or/CC, more/JJR, -LRB-/-LRB-, irrespective/RB, of/IN, hypertension/NN, or/CC, cardiovascular/JJ, disease/NN, -RRB-/-RRB-, ./.]
+
+(ROOT
+  (S
+    (NP
+      (NP (NNP Control) (NN blood) (NN pressure))
+      (PP (TO to)
+        (NP
+          (NP (NNS targets))
+          (PP (IN of)
+            (NP
+              (NP (CD 120-139))
+              (: /)
+              (NP
+                (QP (CD <) (CD 90)))))
+          (VP (VBG mmHg)
+            (PP (IN in)
+              (NP (NNS people)))
+            (PP (IN without)
+              (NP
+                (NP (NN diabetes))
+                (PP (IN with)
+                  (NP (NNP ACR)))))))))
+    (VP (VBP <)
+      (NP (CD 70) (NN mg/mmol)))
+    (. .)))
+
+[compound(pressure-3, Control-1), compound(pressure-3, blood-2), nsubj(<-18, pressure-3), case(targets-5, to-4), nmod:to(pressure-3, targets-5), case(120-139-7, of-6), nmod:of(targets-5, 120-139-7), compound(90-10, <-9), dep(120-139-7, 90-10), acl(targets-5, mmHg-11), case(people-13, in-12), nmod:in(mmHg-11, people-13), case(diabetes-15, without-14), nmod:without(mmHg-11, diabetes-15), case(ACR-17, with-16), nmod:with(diabetes-15, ACR-17), root(ROOT-0, <-18), nummod(mg/mmol-20, 70-19), dobj(<-18, mg/mmol-20)]
+
+[Control/NNP, blood/NN, pressure/NN, to/TO, targets/NNS, of/IN, 120-139/CD, //:, </CD, 90/CD, mmHg/VBG, in/IN, people/NNS, without/IN, diabetes/NN, with/IN, ACR/NNP, </VBP, 70/CD, mg/mmol/NN, ./.]
+
+(ROOT
+  (S
+    (NP
+      (NP (NNP Control) (NN blood) (NN pressure))
+      (PP (TO to)
+        (NP
+          (NP (NNS targets))
+          (PP (IN of)
+            (NP
+              (NP (CD 120-129))
+              (: /)
+              (NP
+                (QP (CD <) (CD 80)))))
+          (VP (VBG mmHg)
+            (PP (IN in)
+              (NP (NNS people)))
+            (PP
+              (PP (IN with)
+                (NP (NN diabetes)))
+              (CC or)
+              (PP (IN with)
+                (NP (NNP ACR))))))))
+    (VP (VBP >)
+      (FRAG
+        (X (SYM =))
+        (NP (CD 70) (NN mg/mmol))))
+    (. .)))
+
+[compound(pressure-3, Control-1), compound(pressure-3, blood-2), nsubj(>-19, pressure-3), case(targets-5, to-4), nmod:to(pressure-3, targets-5), case(120-129-7, of-6), nmod:of(targets-5, 120-129-7), compound(80-10, <-9), dep(120-129-7, 80-10), acl(targets-5, mmHg-11), acl(targets-5, mmHg-11'), conj:or(mmHg-11, mmHg-11'), case(people-13, in-12), nmod:in(mmHg-11, people-13), case(diabetes-15, with-14), nmod:with(mmHg-11, diabetes-15), cc(mmHg-11, or-16), case(ACR-18, with-17), nmod:with(mmHg-11', ACR-18), root(ROOT-0, >-19), dep(mg/mmol-22, =-20), nummod(mg/mmol-22, 70-21), dep(>-19, mg/mmol-22)]
+
+[Control/NNP, blood/NN, pressure/NN, to/TO, targets/NNS, of/IN, 120-129/CD, //:, </CD, 80/CD, mmHg/VBG, in/IN, people/NNS, with/IN, diabetes/NN, or/CC, with/IN, ACR/NNP, >/VBP, =/SYM, 70/CD, mg/mmol/NN, ./.]
+
