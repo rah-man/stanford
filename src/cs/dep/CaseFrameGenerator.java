@@ -76,24 +76,49 @@ public class CaseFrameGenerator {
         // find nmod and conj from headChildren.get(DOBJ).children >__<
         TreeNode nmod = null;
         TreeNode conj = null;
+        boolean conjWasNull = true;
         for (TreeNode node : headChildren.get(DOBJ).children) {
             if (node.reln.equals("nmod")) {
                 nmod = node;
             }
             if (node.reln.equals("conj")) {
                 conj = node;
+                conjWasNull = false;
+            }
+        }
+
+        LinkedList<TreeNode> tempQueue = new LinkedList<TreeNode>();
+
+        if (conj == null) {
+            tempQueue.add(nmod);
+            findConj:
+            while (!tempQueue.isEmpty()) {
+                TreeNode t = tempQueue.removeFirst();
+                for (TreeNode c : t.children) {
+                    if (c.reln.equals("conj")) {
+                        conj = c;
+                        break findConj;
+                    }
+                }
+                tempQueue.addAll(t.children);
             }
         }
 
         // recursively traverse on nmod until no more conj found
-        LinkedList<TreeNode> tempQueue = new LinkedList<TreeNode>();
+        tempQueue = new LinkedList<TreeNode>();
         tempQueue.addAll(nmod.children);
         while (!tempQueue.isEmpty()) {
             TreeNode t = tempQueue.removeFirst();
-            if (t.reln.equals("nmod") || t.reln.equals("conj")) {
+            if (t.reln.equals("nmod") || (t.reln.equals("conj") && !conjWasNull)) {
                 condFrame.addTree(t);
             }
-            tempQueue.addAll(t.children);
+
+            // TO DO: ADD ONLY THE CHILDREN THAT FOLLOW THE IF CRITERIA
+            for (TreeNode c : t.children) {
+                if (t.reln.equals("nmod") || (t.reln.equals("conj") && !conjWasNull)) {
+                    tempQueue.add(c);
+                }
+            }
         }
 
         // recursively traverse on conj(?)

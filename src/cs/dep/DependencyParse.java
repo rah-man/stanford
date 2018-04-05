@@ -21,7 +21,7 @@ public class DependencyParse {
     public DependencyParse() {
         this("edu/stanford/nlp/models/parser/nndep/english_UD.gz",
                 "edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger",
-                "Offer a low-cost renin-angiotensin-aldosterone system antagonist to people with CKD and diabetes and an ACR of 3 mg/mmol or more (ACR category A2 or A3).");
+                "Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.");
     }
 
     public DependencyParse(String modelPath, String taggerPath, String text) {
