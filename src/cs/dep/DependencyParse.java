@@ -12,16 +12,16 @@ import java.io.StringReader;
 import java.util.*;
 
 public class DependencyParse {
-    private Redwood.RedwoodChannels log = Redwood.channels(new Object[]{edu.stanford.nlp.parser.nndep.demo.DependencyParserDemo.class});
-    private MaxentTagger tagger = null;
-    private edu.stanford.nlp.parser.nndep.DependencyParser parser = null;
-    private String modelPath, taggerPath, text;
+    protected Redwood.RedwoodChannels log = Redwood.channels(new Object[]{edu.stanford.nlp.parser.nndep.demo.DependencyParserDemo.class});
+    protected MaxentTagger tagger = null;
+    protected edu.stanford.nlp.parser.nndep.DependencyParser parser = null;
+    protected String modelPath, taggerPath, text;
     protected Collection<TypedDependency> dependencies;
 
     public DependencyParse() {
         this("edu/stanford/nlp/models/parser/nndep/english_UD.gz",
                 "edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger",
-                "Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.");
+                "Offer a low-cost renin-angiotensin-aldosterone system antagonist to people with CKD and diabetes and an ACR of 3 mg/mmol or more (ACR category A2 or A3).");
     }
 
     public DependencyParse(String modelPath, String taggerPath, String text) {
@@ -33,7 +33,7 @@ public class DependencyParse {
         parser = edu.stanford.nlp.parser.nndep.DependencyParser.loadFromModelFile(modelPath);
     }
 
-    public List<DependencyTree> parseSentence(){
+    public List<DependencyTree> parseSentence() {
         DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(text));
         Iterator it = tokenizer.iterator();
         List<DependencyTree> treeList = new ArrayList<DependencyTree>();
@@ -74,7 +74,7 @@ public class DependencyParse {
         return treeList;
     }
 
-    public void printDependencyStructure(TreeNode root){
+    public void printDependencyStructure(TreeNode root) {
         LinkedList<TreeNode> tree = new LinkedList<TreeNode>();
         tree.add(root);
         while (!tree.isEmpty()) {
@@ -84,16 +84,20 @@ public class DependencyParse {
         }
     }
 
-    public void printTypedDependency(){
-        for(TypedDependency t : dependencies){
+    public void printTypedDependency() {
+        for (TypedDependency t : dependencies) {
             System.out.println(t);
         }
+    }
+
+    public String getText() {
+        return text;
     }
 
     public static void main(String[] args) {
         DependencyParse dp = new DependencyParse();
         List<DependencyTree> parseList = dp.parseSentence();
-        for(DependencyTree tree : parseList){
+        for (DependencyTree tree : parseList) {
             dp.printDependencyStructure(tree.getRoot());
         }
 

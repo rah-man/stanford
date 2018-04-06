@@ -3,10 +3,20 @@ package cs.dep;
 import java.util.Objects;
 
 public class Action {
-    protected String action;
-    protected String value;
+    // public because getters are too much
+    public String action;
+    public String value;
 
     public Action() {
+    }
+
+    /**
+     * For GUI Builder
+     *
+     * @param actionObject - an array of String and String
+     */
+    public Action(Object[] actionObject) {
+        this((String) actionObject[0], (String) actionObject[1]);
     }
 
     public Action(String action, String value) {

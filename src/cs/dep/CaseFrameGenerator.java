@@ -35,12 +35,16 @@ public class CaseFrameGenerator {
             }
         }
 
-        caseFrame.actFrame = getActionFrame(head, headChildren);
-        caseFrame.conFrame = getConditionFrame(head, headChildren);
+        caseFrame.actionFrame = getActionFrame(head, headChildren);
+        caseFrame.conditionFrame = getConditionFrame(head, headChildren);
     }
 
-    public CaseFrame getCaseFrame() {
-        return caseFrame;
+    public ArrayList<Condition> getConditionList() {
+        return caseFrame.conditionFrame.condList;
+    }
+
+    public ArrayList<Action> getActionList() {
+        return caseFrame.actionFrame.actionList;
     }
 
     private ActionFrame getActionFrame(TreeNode head, ArrayList<TreeNode> headChildren) {
@@ -134,6 +138,10 @@ public class CaseFrameGenerator {
         return condFrame;
     }
 
+    public CaseFrame getCaseFrame() {
+        return caseFrame;
+    }
+
     public static void main(String[] args) {
         DependencyParse dp = new DependencyParse();
         List<DependencyTree> parseTreeList = dp.parseSentence();
@@ -141,16 +149,9 @@ public class CaseFrameGenerator {
 
         CaseFrame caseFrame = cfGenerator.getCaseFrame();
         System.out.println("=====CONDITION FRAME=====");
-        System.out.println(caseFrame.conFrame);
+        System.out.println(caseFrame.conditionFrame);
         System.out.println("=====ACTION FRAME=====");
-        System.out.println(caseFrame.actFrame);
+        System.out.println(caseFrame.actionFrame);
     }
 }
 
-/**
- * Small container for CaseFrame object. Nothing much.
- */
-class CaseFrame {
-    protected ConditionFrame conFrame;
-    protected ActionFrame actFrame;
-}

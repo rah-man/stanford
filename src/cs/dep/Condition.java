@@ -3,18 +3,20 @@ package cs.dep;
 import java.util.Objects;
 
 public class Condition {
-    protected String condition;
-    protected String mod;
-    protected String value;
+    // public because getters are too much
+    public String condition;
+    public String mod;
+    public String value;
 
     public Condition() {
     }
 
     /**
      * For GUI Builder
+     *
      * @param conditionObject - an array of String, String and Boolean
      */
-    public Condition(Object[] conditionObject){
+    public Condition(Object[] conditionObject) {
         this((String) conditionObject[0], (String) conditionObject[1], (String) conditionObject[2]);
     }
 
