@@ -12,8 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -57,6 +56,8 @@ public class CaseFrameGUI extends JPanel {
 
     private void buildConditionTable() {
         JPanel conditionTablePanel = new JPanel(new GridLayout(2, 0));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
         conditionTable = new JTable(new ConditionTableModel(cfGenerator.getConditionList()));
         conditionTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
         conditionTable.setFillsViewportHeight(true);
@@ -65,16 +66,19 @@ public class CaseFrameGUI extends JPanel {
 
         JScrollPane tableScrollPane = new JScrollPane(conditionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JButton removeButton = new JButton("Remove");
+        JButton removeButton = new JButton("Remove Condition");
         removeButton.addActionListener(new RemoveButtonListener(conditionTable));
+        bottomPanel.add(removeButton);
 
         conditionTablePanel.add(tableScrollPane);
-        conditionTablePanel.add(removeButton);
+        conditionTablePanel.add(bottomPanel);
         add(conditionTablePanel);
     }
 
     private void buildActionTable() {
         JPanel actionTablePanel = new JPanel(new GridLayout(2, 0));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
         actionTable = new JTable(new ActionTableModel(cfGenerator.getActionList()));
         actionTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
         actionTable.setFillsViewportHeight(true);
@@ -85,11 +89,12 @@ public class CaseFrameGUI extends JPanel {
 
         JScrollPane tableScrollPane = new JScrollPane(actionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JButton removeButton = new JButton("Remove");
+        JButton removeButton = new JButton("Remove Action");
         removeButton.addActionListener(new RemoveButtonListener(actionTable));
+        bottomPanel.add(removeButton);
 
         actionTablePanel.add(tableScrollPane);
-        actionTablePanel.add(removeButton);
+        actionTablePanel.add(bottomPanel);
         add(actionTablePanel);
     }
 
@@ -103,6 +108,7 @@ public class CaseFrameGUI extends JPanel {
 
         frame.pack();
         frame.setVisible(true);
+        frame.setResizable(false);
         frame.setLocationRelativeTo(null);
     }
 

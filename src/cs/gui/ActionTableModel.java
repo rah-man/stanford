@@ -6,8 +6,6 @@ import cs.dep.Condition;
 import java.util.ArrayList;
 
 public class ActionTableModel extends GUITableModel {
-    protected ArrayList<Action> dataList = new ArrayList<Action>();
-
     public ActionTableModel(ArrayList<Action> actionList) {
         this.columnNames = new String[]{"Action", "Value", "Check"};
         this.dataList = actionList;

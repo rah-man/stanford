@@ -9,6 +9,7 @@ public abstract class GUITableModel extends AbstractTableModel {
     protected String[] columnNames;
     protected ArrayList<Object[]> data = new ArrayList<Object[]>();
     protected Boolean f = false;
+    protected ArrayList dataList = new ArrayList();
 
     public int getColumnCount() {
         return columnNames.length;

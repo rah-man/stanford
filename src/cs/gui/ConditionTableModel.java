@@ -5,11 +5,9 @@ import cs.dep.Condition;
 import java.util.ArrayList;
 
 public class ConditionTableModel extends GUITableModel {
-    protected ArrayList<Condition> dataList = new ArrayList<Condition>();
-
     public ConditionTableModel(ArrayList<Condition> conditionList) {
         this.columnNames = new String[]{"Condition", "Mod", "Value", "Check"};
-        dataList = conditionList;
+        this.dataList = conditionList;
 
         for (Condition condition : conditionList) {
             data.add(new Object[]{condition.condition, condition.mod, condition.value, f});
