@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.table.TableModel;
+import cs.dep.*;
 
 public class CaseFrame extends JPanel {
     protected boolean DEBUG = false;
@@ -56,14 +57,6 @@ public class CaseFrame extends JPanel {
         conditionTable.setRowSelectionAllowed(true);
         conditionTable.setColumnSelectionAllowed(false);
 
-/*        if (DEBUG) {
-            conditionTable.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    printDebugData(conditionTable);
-                }
-            });
-        }*/
-
         JScrollPane tableScrollPane = new JScrollPane(conditionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         JButton removeButton = new JButton("Remove");
@@ -71,8 +64,6 @@ public class CaseFrame extends JPanel {
 
         conditionTablePanel.add(tableScrollPane);
         conditionTablePanel.add(removeButton);
-//        add(tableScrollPane);
-//        add(removeButton);
         add(conditionTablePanel);
     }
 
@@ -98,7 +89,7 @@ public class CaseFrame extends JPanel {
         JTable table;
         TableModel model;
         ConditionTableModel cTableModel;
-        public RemoveButtonListener(JTable table){
+        private RemoveButtonListener(JTable table){
             this.table = table;
             model = this.table.getModel();
             cTableModel = (ConditionTableModel) model;
@@ -106,27 +97,16 @@ public class CaseFrame extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
             int numRows = table.getRowCount();
             int numCols = table.getColumnCount();
-
-            System.out.println("Value of data: ");
             ArrayList<Integer> rowList = new ArrayList<Integer>();
+
             for (int i = 0; i < numRows; i++) {
-                System.out.print("    row " + i + ":");
-                for (int j = 0; j < numCols; j++) {
-                    System.out.print("  " + model.getValueAt(i, j));
-                }
                 if(model.getValueAt(i, numCols-1) == Boolean.TRUE){
                     rowList.add(i);
                 }
-                System.out.println();
             }
-            for(Integer row : rowList){
-                cTableModel.removeRow(row);
-            }
-
-            System.out.println("--------------------------");
+            cTableModel.removeRows(rowList);
         }
     }
 
@@ -159,24 +139,6 @@ public class CaseFrame extends JPanel {
         System.out.println(".");
     }
 
-/*
-    private void printDebugData(JTable table) {
-        int numRows = table.getRowCount();
-        int numCols = table.getColumnCount();
-        javax.swing.table.TableModel model = table.getModel();
-
-        System.out.println("Value of data: ");
-        for (int i = 0; i < numRows; i++) {
-            System.out.print("    row " + i + ":");
-            for (int j = 0; j < numCols; j++) {
-                System.out.print("  " + model.getValueAt(i, j));
-            }
-            System.out.println();
-        }
-        System.out.println("--------------------------");
-    }
-*/
-
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("How now brown cow");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -200,8 +162,13 @@ public class CaseFrame extends JPanel {
 }
 
 class ConditionTableModel extends AbstractTableModel {
+    protected ArrayList<Condition> conditionList = new ArrayList<Condition>();
     protected String[] columnNames = {"Condition", "Mod", "Value", "Check"};
     protected ArrayList<Object[]> data = new ArrayList<Object[]>();
+
+    protected static final int CONDITION = 0;
+    protected static final int MOD = 1;
+    protected static final int VALUE = 2;
 
     public ConditionTableModel(){
         Object[][] obj = {
@@ -211,6 +178,8 @@ class ConditionTableModel extends AbstractTableModel {
         };
 
         for(Object[] o : obj){
+            Condition condition = new Condition(o);
+            conditionList.add(condition);
             data.add(o);
         }
     }
@@ -264,9 +233,20 @@ class ConditionTableModel extends AbstractTableModel {
         fireTableCellUpdated(row, col);
     }
 
-    public void removeRow(int row){
-        data.remove(row);
-        fireTableDataChanged();
+    public void removeRows(ArrayList<Integer> rowList){
+        ArrayList<Object[]> deletedObject = new ArrayList<Object[]>();
+        for(Integer row : rowList){
+            deletedObject.add(data.get(row));
+        }
+
+        for(Object[] deleted : deletedObject){
+            Condition condition = new Condition(deleted);
+            System.out.println("Trying to remove: " + condition);
+            int conditionIndex = conditionList.indexOf(condition);
+            conditionList.remove(conditionIndex);
+            data.remove(conditionIndex);
+            fireTableDataChanged();
+        }
     }
 
 }
