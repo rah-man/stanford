@@ -46,15 +46,6 @@ public class CaseFrameGenerator {
     private ActionFrame getActionFrame(TreeNode head, ArrayList<TreeNode> headChildren) {
         ActionFrame actFrame = new ActionFrame();
 
-        // assuming the root always has nsub and dobj
-        // PROCESS THE ACTION OBJECT FROM dobj
-        // this only works for one action, so far
-        /*for (TreeNode node : headChildren.get(DOBJ).children) {
-            if (!node.reln.equals("det")) {
-                object.add(node);
-            }
-        }*/
-
         Set<TreeNode> actTree = new TreeSet<TreeNode>();
         actTree.add(head);
         actTree.add(headChildren.get(DOBJ));
@@ -137,52 +128,6 @@ public class CaseFrameGenerator {
                 }
             }
         }
-
-
-        /*
-        // assuming the root always has nsub and dobj
-        // PROCESS THE CONDITION FROM nsub
-        for (TreeNode node : headChildren.get(NSUB).children) {
-            if (!(node.reln.equals("case") || node.reln.equals("dep") || node.reln.equals("cc"))) {
-                subject.add(node);
-            }
-        }
-
-        String pattern = "NNS|NN";
-        ArrayList<TreeNode> conditions = new ArrayList<TreeNode>();
-        // assuming there are at least two children
-        // DO I REALLY NEED THE CONDITIONS LIST?
-        conditions.add(subject.get(0));
-        condFrame.addTree(subject.get(0));
-        for (TreeNode node : subject.get(0).children) {
-            if (node.tag.matches(pattern)) {
-                conditions.add(node);
-                condFrame.addTree(node);
-            }
-        }
-
-        // nmod is an important marker
-        boolean modExist = false;
-        pattern = "(\\w*)mod";
-        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
-        for (TreeNode node : subject.get(1).children) {
-            if (node.reln.matches(pattern)) {
-                modExist = true;
-                queue.add(node);
-            }
-        }
-
-        // get until no more children (?)
-        Set<TreeNode> modTree = new TreeSet<TreeNode>();
-        modTree.add(subject.get(1));
-        if (modExist) {
-            while (!queue.isEmpty()) {
-                TreeNode node = queue.removeFirst();
-                modTree.add(node);
-
-                queue.addAll(node.children);
-            }
-        }*/
 
         condFrame.addTree(new ArrayList<TreeNode>(aSet));
         condFrame.normaliseConditions();

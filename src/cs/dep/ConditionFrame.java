@@ -3,6 +3,7 @@ package cs.dep;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ConditionFrame {
     private ArrayList<ArrayList<TreeNode>> conditionTree = new ArrayList<ArrayList<TreeNode>>();
@@ -88,7 +89,23 @@ class Condition {
         this.value = value;
     }
 
+    @Override
     public String toString() {
         return condition + " " + mod + " " + value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Condition condition1 = (Condition) o;
+        return Objects.equals(condition, condition1.condition) &&
+                Objects.equals(mod, condition1.mod) &&
+                Objects.equals(value, condition1.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(condition, mod, value);
     }
 }
