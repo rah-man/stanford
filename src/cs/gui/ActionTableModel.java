@@ -1,7 +1,6 @@
 package cs.gui;
 
 import cs.dep.Action;
-import cs.dep.Condition;
 
 import java.util.ArrayList;
 
@@ -30,5 +29,10 @@ public class ActionTableModel extends GUITableModel {
             data.remove(removeIndex);
             fireTableDataChanged();
         }
+    }
+
+    @Override
+    public void addRow(Object obj) {
+
     }
 }

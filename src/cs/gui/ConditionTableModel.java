@@ -30,4 +30,12 @@ public class ConditionTableModel extends GUITableModel {
             fireTableDataChanged();
         }
     }
+
+    @Override
+    public void addRow(Object obj) {
+        Condition condition = (Condition) obj;
+        dataList.add(condition);
+        data.add(new Object[]{condition.condition, condition.mod, condition.value, f});
+        fireTableDataChanged();
+    }
 }

@@ -1,7 +1,5 @@
 package cs.gui;
 
-import cs.dep.Condition;
-
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
@@ -58,4 +56,5 @@ public abstract class GUITableModel extends AbstractTableModel {
     }
 
     public abstract void removeRows(ArrayList<Integer> rowList);
+    public abstract void addRow(Object obj);
 }
