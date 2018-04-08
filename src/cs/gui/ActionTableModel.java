@@ -33,6 +33,9 @@ public class ActionTableModel extends GUITableModel {
 
     @Override
     public void addRow(Object obj) {
-
+        Action action = (Action) obj;
+        dataList.add(action);
+        data.add(new Object[]{action.action, action.value, f});
+        fireTableDataChanged();
     }
 }

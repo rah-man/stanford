@@ -2,6 +2,7 @@ package cs.gui;
 
 import cs.dep.CaseFrameGenerator;
 import cs.dep.Condition;
+import cs.dep.Action;
 import cs.dep.DependencyParse;
 import cs.dep.DependencyTree;
 
@@ -65,7 +66,7 @@ public class CaseFrameGUI extends JPanel {
 
         JScrollPane tableScrollPane = new JScrollPane(conditionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JButton addButton = new JButton("Add Condition");
+        JButton addButton = new JButton("New Condition");
         addButton.addActionListener(new AddConditionButtonListener(editorPane, conditionTable));
         JButton removeButton = new JButton("Remove Condition");
         removeButton.addActionListener(new RemoveButtonListener(conditionTable));
@@ -80,6 +81,8 @@ public class CaseFrameGUI extends JPanel {
     private void buildActionTable() {
         JPanel actionTablePanel = new JPanel(new GridLayout(2, 0));
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton addButton = new JButton("New Action");
+        JButton removeButton = new JButton("Remove Action");
 
         actionTable = new JTable(new ActionTableModel(cfGenerator.getActionList()));
         actionTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -91,8 +94,9 @@ public class CaseFrameGUI extends JPanel {
 
         JScrollPane tableScrollPane = new JScrollPane(actionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JButton removeButton = new JButton("Remove Action");
+        addButton.addActionListener(new AddActionButtonListener(editorPane, actionTable));
         removeButton.addActionListener(new RemoveButtonListener(actionTable));
+        bottomPanel.add(addButton);
         bottomPanel.add(removeButton);
 
         actionTablePanel.add(tableScrollPane);
@@ -135,52 +139,116 @@ public class CaseFrameGUI extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             String condition = editorPane.getSelectedText();
-            JFrame newConditionFrame = new JFrame("New Condition");
             if (condition == null) {
                 JOptionPane.showMessageDialog(mainFrame, "Select a condition from the above text first.");
             } else {
-                JLabel conditionLabel = new JLabel("Condition:");
-                JLabel modLabel = new JLabel("Mod:");
-                JLabel valueLabel = new JLabel("Value:");
-                JTextField conditionField = new JTextField(condition);
-                JTextField modField = new JTextField();
-                JTextField valueField = new JTextField();
-                JButton submitButton = new JButton("Submit");
-                JButton cancelButton = new JButton("Cancel");
-
-                JPanel newConditionPanel = new JPanel(new GridLayout(4, 2));
-                newConditionPanel.add(conditionLabel);
-                newConditionPanel.add(conditionField);
-                newConditionPanel.add(modLabel);
-                newConditionPanel.add(modField);
-                newConditionPanel.add(valueLabel);
-                newConditionPanel.add(valueField);
-                newConditionPanel.add(submitButton);
-                newConditionPanel.add(cancelButton);
-
-                String[] message = {conditionField.getText(), modField.getText(), valueField.getText()};
-                submitButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        Condition condition = new Condition(conditionField.getText(),
-                                modField.getText(), valueField.getText());
-                        tableModel.addRow(condition);
-                        newConditionFrame.dispose();
-                    }
-                });
-                cancelButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        newConditionFrame.dispose();
-                    }
-                });
-
-                newConditionFrame.add(newConditionPanel);
-                newConditionFrame.pack();
-                newConditionFrame.setResizable(false);
-                newConditionFrame.setLocationRelativeTo(null);
-                newConditionFrame.setVisible(true);
+                buildNewConditionFrame(condition);
             }
+        }
+
+        private void buildNewConditionFrame(String condition) {
+            JFrame newConditionFrame = new JFrame("New Condition");
+            JLabel conditionLabel = new JLabel("Condition:");
+            JLabel modLabel = new JLabel("Mod:");
+            JLabel valueLabel = new JLabel("Value:");
+            JTextField conditionField = new JTextField(condition);
+            JTextField modField = new JTextField();
+            JTextField valueField = new JTextField();
+            JButton submitButton = new JButton("Submit");
+            JButton cancelButton = new JButton("Cancel");
+
+            JPanel newConditionPanel = new JPanel(new GridLayout(4, 2));
+            newConditionPanel.add(conditionLabel);
+            newConditionPanel.add(conditionField);
+            newConditionPanel.add(modLabel);
+            newConditionPanel.add(modField);
+            newConditionPanel.add(valueLabel);
+            newConditionPanel.add(valueField);
+            newConditionPanel.add(submitButton);
+            newConditionPanel.add(cancelButton);
+
+            submitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Condition condition = new Condition(conditionField.getText(),
+                            modField.getText(), valueField.getText());
+                    tableModel.addRow(condition);
+                    newConditionFrame.dispose();
+                }
+            });
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    newConditionFrame.dispose();
+                }
+            });
+
+            newConditionFrame.add(newConditionPanel);
+            newConditionFrame.pack();
+            newConditionFrame.setResizable(false);
+            newConditionFrame.setLocationRelativeTo(null);
+            newConditionFrame.setVisible(true);
+        }
+    }
+
+    class AddActionButtonListener implements ActionListener {
+        JEditorPane editorPane;
+        JTable table;
+        GUITableModel tableModel;
+
+        private AddActionButtonListener(JEditorPane editorPane, JTable table) {
+            this.editorPane = editorPane;
+            this.table = table;
+            tableModel = (GUITableModel) table.getModel();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String action = editorPane.getSelectedText();
+            if (action == null) {
+                JOptionPane.showMessageDialog(mainFrame, "Select an action from the above text first.");
+            } else {
+                buildNewActionFrame(action);
+            }
+        }
+
+        private void buildNewActionFrame(String action) {
+            JFrame newActionFrame = new JFrame("New Action");
+            JLabel actionLabel = new JLabel("Action:");
+            JLabel valueLabel = new JLabel("Value:");
+            JTextField actionField = new JTextField(action);
+            JTextField valueField = new JTextField();
+            JButton submitButton = new JButton("Submit");
+            JButton cancelButton = new JButton("Cancel");
+
+            JPanel newConditionPanel = new JPanel(new GridLayout(4, 2));
+            newConditionPanel.add(actionLabel);
+            newConditionPanel.add(actionField);
+            newConditionPanel.add(valueLabel);
+            newConditionPanel.add(valueField);
+            newConditionPanel.add(submitButton);
+            newConditionPanel.add(cancelButton);
+
+            submitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Action action = new Action(actionField.getText().toLowerCase(), valueField.getText());
+                    tableModel.addRow(action);
+                    newActionFrame.dispose();
+                }
+            });
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    newActionFrame.dispose();
+                }
+            });
+
+            newActionFrame.add(newConditionPanel);
+            newActionFrame.pack();
+            newActionFrame.setResizable(false);
+            newActionFrame.setLocationRelativeTo(null);
+            newActionFrame.setVisible(true);
         }
     }
 
