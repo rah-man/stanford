@@ -85,9 +85,12 @@ public class CaseFrameGUI extends JPanel {
 
     private void buildActionTable() {
         JPanel actionTablePanel = new JPanel(new GridLayout(2, 0));
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel bottomPanel = new JPanel(new GridLayout(2, 0));
+        JPanel actionRelatedPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JPanel modelRelatedPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton addButton = new JButton("New Action");
         JButton removeButton = new JButton("Remove Action");
+        JButton generateModelButton = new JButton("Generate Model");
 
         actionTable = new JTable(new ActionTableModel(cfGenerator.getActionList()));
         actionTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -101,13 +104,27 @@ public class CaseFrameGUI extends JPanel {
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         addButton.addActionListener(new AddActionButtonListener(actionTable));
         removeButton.addActionListener(new RemoveButtonListener(actionTable));
-        bottomPanel.add(addButton);
-        bottomPanel.add(removeButton);
+        actionRelatedPanel.add(addButton);
+        actionRelatedPanel.add(removeButton);
+        bottomPanel.add(actionRelatedPanel);
+
+
+        generateModelButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("First, make sure every sentences have been verified. HOW?");
+                System.out.println("Next, the main issue: transform every sentences to Z3 syntax");
+                System.out.println("Finally, check the satisfiability (OF/AGAINST WHAT?)");
+            }
+        });
+        modelRelatedPanel.add(generateModelButton);
+        bottomPanel.add(modelRelatedPanel);
 
         actionTablePanel.add(tableScrollPane);
         actionTablePanel.add(bottomPanel);
         add(actionTablePanel);
     }
+
 
     public void createAndShowGUI() {
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
