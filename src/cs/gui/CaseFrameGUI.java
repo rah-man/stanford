@@ -29,12 +29,17 @@ public class CaseFrameGUI extends JPanel {
     public CaseFrameGUI() {
         super(new GridLayout(3, 0));
 
-        DependencyParse dp = new DependencyParse();
+        String text = "Control blood pressure to targets of 120-139/<90 mmHg in people without diabetes with ACR < 70 mg/mmol.";
+        DependencyParse dp = new DependencyParse(text);
         List<DependencyTree> parseTreeList = dp.parseSentence();
         cfGenerator = new CaseFrameGenerator(parseTreeList);
 
-        text = dp.getText();
+        this.text = dp.getText();
 
+        initBuild();
+    }
+
+    private void initBuild(){
         buildEditorPane();
         buildConditionTable();
         buildActionTable();
@@ -90,7 +95,7 @@ public class CaseFrameGUI extends JPanel {
         actionTable.setRowSelectionAllowed(true);
         actionTable.setColumnSelectionAllowed(false);
         actionTable.getColumnModel().getColumn(0).setMaxWidth(150);
-        actionTable.getColumnModel().getColumn(2).setMaxWidth(50);
+        actionTable.getColumnModel().getColumn(3).setMaxWidth(50);
 
         JScrollPane tableScrollPane = new JScrollPane(actionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -139,6 +144,7 @@ public class CaseFrameGUI extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             String condition = editorPane.getSelectedText();
+            System.out.println("INSIDE ADDCONDITIONBUTTONLISTENER: " + editorPane.getSelectedText());
             if (condition == null) {
                 JOptionPane.showMessageDialog(mainFrame, "Select a condition from the above text first.");
             } else {
@@ -172,7 +178,7 @@ public class CaseFrameGUI extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     Condition condition = new Condition(conditionField.getText(),
                             modField.getText(), valueField.getText());
-                    tableModel.addRow(condition);
+                    tableModel.addRow(condition);mainFrame.validate();
                     newConditionFrame.dispose();
                 }
             });
@@ -204,6 +210,7 @@ public class CaseFrameGUI extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            System.out.println("INSIDE ADDACTIONBUTTONLISTENER: " + editorPane.getSelectedText());
             String action = editorPane.getSelectedText();
             if (action == null) {
                 JOptionPane.showMessageDialog(mainFrame, "Select an action from the above text first.");
@@ -215,8 +222,10 @@ public class CaseFrameGUI extends JPanel {
         private void buildNewActionFrame(String action) {
             JFrame newActionFrame = new JFrame("New Action");
             JLabel actionLabel = new JLabel("Action:");
+            JLabel agentLabel = new JLabel("Agent");
             JLabel valueLabel = new JLabel("Value:");
             JTextField actionField = new JTextField(action);
+            JTextField agentField = new JTextField();
             JTextField valueField = new JTextField();
             JButton submitButton = new JButton("Submit");
             JButton cancelButton = new JButton("Cancel");
@@ -224,6 +233,8 @@ public class CaseFrameGUI extends JPanel {
             JPanel newConditionPanel = new JPanel(new GridLayout(4, 2));
             newConditionPanel.add(actionLabel);
             newConditionPanel.add(actionField);
+            newConditionPanel.add(agentLabel);
+            newConditionPanel.add(agentField);
             newConditionPanel.add(valueLabel);
             newConditionPanel.add(valueField);
             newConditionPanel.add(submitButton);
@@ -232,7 +243,7 @@ public class CaseFrameGUI extends JPanel {
             submitButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Action action = new Action(actionField.getText().toLowerCase(), valueField.getText());
+                    Action action = new Action(actionField.getText().toLowerCase(), agentField.getText(), valueField.getText());
                     tableModel.addRow(action);
                     newActionFrame.dispose();
                 }

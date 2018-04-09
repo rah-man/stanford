@@ -24,6 +24,12 @@ public class DependencyParse {
                 "Offer a low-cost renin-angiotensin-aldosterone system antagonist to people with CKD and diabetes and an ACR of 3 mg/mmol or more (ACR category A2 or A3).");
     }
 
+    public DependencyParse(String text) {
+        this("edu/stanford/nlp/models/parser/nndep/english_UD.gz",
+                "edu/stanford/nlp/models/pos-tagger/english-bidirectional/english-bidirectional-distsim.tagger",
+                text);
+    }
+
     public DependencyParse(String modelPath, String taggerPath, String text) {
         this.modelPath = modelPath;
         this.taggerPath = taggerPath;

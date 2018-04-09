@@ -3,14 +3,20 @@ package cs.gui;
 import cs.dep.Condition;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ConditionTableModel extends GUITableModel {
     public ConditionTableModel(ArrayList<Condition> conditionList) {
         this.columnNames = new String[]{"Condition", "Mod", "Value", "Check"};
-        this.dataList = conditionList;
+        this.dataList = (conditionList != null) ? conditionList : new ArrayList<Condition>();
+        fillTable(conditionList);
+    }
 
-        for (Condition condition : conditionList) {
-            data.add(new Object[]{condition.condition, condition.mod, condition.value, f});
+    private void fillTable(ArrayList<Condition> conditionList) {
+        if (conditionList != null) {
+            for (Condition condition : conditionList) {
+                data.add(new Object[]{condition.condition, condition.mod, condition.value, f});
+            }
         }
     }
 

@@ -18,12 +18,13 @@ public class ActionFrame {
     public ArrayList<Action> normaliseAction() {
         for (ArrayList<TreeNode> treeList : actionTree) {
             String action = treeList.get(ACTION).value;
+            String agent = "";
             String value = "";
             for (int i = 1; i < treeList.size(); i++) {
-                value += treeList.get(i).value + " ";
+                agent += treeList.get(i).value + " ";
             }
 
-            Action act = new Action(action, value.trim());
+            Action act = new Action(action, agent.trim(), value.trim());
             actionList.add(act);
         }
 

@@ -35,19 +35,23 @@ public class CaseFrameGenerator {
             }
         }
 
-        caseFrame.actionFrame = getActionFrame(head, headChildren);
-        caseFrame.conditionFrame = getConditionFrame(head, headChildren);
+        try {
+            caseFrame.actionFrame = getActionFrame(head, headChildren);
+            caseFrame.conditionFrame = getConditionFrame(head, headChildren);
+        } catch (NullPointerException e) {
+
+        }
     }
 
     public ArrayList<Condition> getConditionList() {
-        return caseFrame.conditionFrame.condList;
+        return (caseFrame.conditionFrame != null) ? caseFrame.conditionFrame.condList : null;
     }
 
     public ArrayList<Action> getActionList() {
-        return caseFrame.actionFrame.actionList;
+        return (caseFrame.actionFrame != null) ? caseFrame.actionFrame.actionList : null;
     }
 
-    private ActionFrame getActionFrame(TreeNode head, ArrayList<TreeNode> headChildren) {
+    private ActionFrame getActionFrame(TreeNode head, ArrayList<TreeNode> headChildren) throws NullPointerException {
         ActionFrame actFrame = new ActionFrame();
 
         Set<TreeNode> actTree = new TreeSet<TreeNode>();
@@ -57,6 +61,7 @@ public class CaseFrameGenerator {
             if (!(node.reln.equals("det") || node.reln.equals("punct") || node.reln.equals("nmod")
                     || node.reln.equals("cc") || node.reln.equals("conj"))) {
                 actTree.add(node);
+                node.printNode();
             }
         }
 
@@ -65,7 +70,7 @@ public class CaseFrameGenerator {
         return actFrame;
     }
 
-    private ConditionFrame getConditionFrame(TreeNode head, ArrayList<TreeNode> headChildren) {
+    private ConditionFrame getConditionFrame(TreeNode head, ArrayList<TreeNode> headChildren) throws NullPointerException {
         // NEW RULE
         ConditionFrame condFrame = new ConditionFrame();
         // find nmod and conj from headChildren.get(DOBJ).children >__<

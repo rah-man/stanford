@@ -6,11 +6,16 @@ import java.util.ArrayList;
 
 public class ActionTableModel extends GUITableModel {
     public ActionTableModel(ArrayList<Action> actionList) {
-        this.columnNames = new String[]{"Action", "Value", "Check"};
-        this.dataList = actionList;
+        this.columnNames = new String[]{"Action", "Agent", "Value", "Check"};
+        this.dataList = (actionList != null) ? actionList : new ArrayList<Action>();
+        fillTable(actionList);
+    }
 
-        for (Action action : actionList) {
-            data.add(new Object[]{action.action, action.value, f});
+    private void fillTable(ArrayList<Action> actionList) {
+        if (actionList != null) {
+            for (Action action : actionList) {
+                data.add(new Object[]{action.action, action.agent, action.value, f});
+            }
         }
     }
 
@@ -35,7 +40,7 @@ public class ActionTableModel extends GUITableModel {
     public void addRow(Object obj) {
         Action action = (Action) obj;
         dataList.add(action);
-        data.add(new Object[]{action.action, action.value, f});
+        data.add(new Object[]{action.action, action.agent, action.value, f});
         fireTableDataChanged();
     }
 }
