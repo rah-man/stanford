@@ -39,7 +39,7 @@ public class CaseFrameGUI extends JPanel {
         initBuild();
     }
 
-    private void initBuild(){
+    private void initBuild() {
         buildEditorPane();
         buildConditionTable();
         buildActionTable();
@@ -62,6 +62,8 @@ public class CaseFrameGUI extends JPanel {
     private void buildConditionTable() {
         JPanel conditionTablePanel = new JPanel(new GridLayout(2, 0));
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton addButton = new JButton("New Condition");
+        JButton removeButton = new JButton("Remove Condition");
 
         conditionTable = new JTable(new ConditionTableModel(cfGenerator.getConditionList()));
         conditionTable.setPreferredScrollableViewportSize(new Dimension(500, 70));
@@ -71,9 +73,7 @@ public class CaseFrameGUI extends JPanel {
 
         JScrollPane tableScrollPane = new JScrollPane(conditionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        JButton addButton = new JButton("New Condition");
-        addButton.addActionListener(new AddConditionButtonListener(editorPane, conditionTable));
-        JButton removeButton = new JButton("Remove Condition");
+        addButton.addActionListener(new AddConditionButtonListener(conditionTable));
         removeButton.addActionListener(new RemoveButtonListener(conditionTable));
         bottomPanel.add(addButton);
         bottomPanel.add(removeButton);
@@ -99,7 +99,7 @@ public class CaseFrameGUI extends JPanel {
 
         JScrollPane tableScrollPane = new JScrollPane(actionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        addButton.addActionListener(new AddActionButtonListener(editorPane, actionTable));
+        addButton.addActionListener(new AddActionButtonListener(actionTable));
         removeButton.addActionListener(new RemoveButtonListener(actionTable));
         bottomPanel.add(addButton);
         bottomPanel.add(removeButton);
@@ -131,33 +131,25 @@ public class CaseFrameGUI extends JPanel {
     }
 
     class AddConditionButtonListener implements ActionListener {
-        JEditorPane editorPane;
         JTable table;
         GUITableModel tableModel;
 
-        private AddConditionButtonListener(JEditorPane editorPane, JTable table) {
-            this.editorPane = editorPane;
+        private AddConditionButtonListener(JTable table) {
             this.table = table;
             tableModel = (GUITableModel) table.getModel();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            String condition = editorPane.getSelectedText();
-            System.out.println("INSIDE ADDCONDITIONBUTTONLISTENER: " + editorPane.getSelectedText());
-            if (condition == null) {
-                JOptionPane.showMessageDialog(mainFrame, "Select a condition from the above text first.");
-            } else {
-                buildNewConditionFrame(condition);
-            }
+            buildNewConditionFrame();
         }
 
-        private void buildNewConditionFrame(String condition) {
+        private void buildNewConditionFrame() {
             JFrame newConditionFrame = new JFrame("New Condition");
             JLabel conditionLabel = new JLabel("Condition:");
             JLabel modLabel = new JLabel("Mod:");
             JLabel valueLabel = new JLabel("Value:");
-            JTextField conditionField = new JTextField(condition);
+            JTextField conditionField = new JTextField();
             JTextField modField = new JTextField();
             JTextField valueField = new JTextField();
             JButton submitButton = new JButton("Submit");
@@ -178,7 +170,7 @@ public class CaseFrameGUI extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     Condition condition = new Condition(conditionField.getText(),
                             modField.getText(), valueField.getText());
-                    tableModel.addRow(condition);mainFrame.validate();
+                    tableModel.addRow(condition);
                     newConditionFrame.dispose();
                 }
             });
@@ -198,33 +190,25 @@ public class CaseFrameGUI extends JPanel {
     }
 
     class AddActionButtonListener implements ActionListener {
-        JEditorPane editorPane;
         JTable table;
         GUITableModel tableModel;
 
-        private AddActionButtonListener(JEditorPane editorPane, JTable table) {
-            this.editorPane = editorPane;
+        private AddActionButtonListener(JTable table) {
             this.table = table;
             tableModel = (GUITableModel) table.getModel();
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("INSIDE ADDACTIONBUTTONLISTENER: " + editorPane.getSelectedText());
-            String action = editorPane.getSelectedText();
-            if (action == null) {
-                JOptionPane.showMessageDialog(mainFrame, "Select an action from the above text first.");
-            } else {
-                buildNewActionFrame(action);
-            }
+            buildNewActionFrame();
         }
 
-        private void buildNewActionFrame(String action) {
+        private void buildNewActionFrame() {
             JFrame newActionFrame = new JFrame("New Action");
             JLabel actionLabel = new JLabel("Action:");
             JLabel agentLabel = new JLabel("Agent");
             JLabel valueLabel = new JLabel("Value:");
-            JTextField actionField = new JTextField(action);
+            JTextField actionField = new JTextField();
             JTextField agentField = new JTextField();
             JTextField valueField = new JTextField();
             JButton submitButton = new JButton("Submit");
