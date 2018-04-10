@@ -7,6 +7,7 @@ public class Action {
     public String action;
     public String agent;
     public String value;
+    public String condition;
 
     public Action() {
     }
@@ -17,18 +18,19 @@ public class Action {
      * @param actionObject - an array of String and String
      */
     public Action(Object[] actionObject) {
-        this((String) actionObject[0], (String) actionObject[1], (String) actionObject[2]);
+        this((String) actionObject[0], (String) actionObject[1], (String) actionObject[2], (String) actionObject[3]);
     }
 
-    public Action(String action, String agent, String value) {
+    public Action(String action, String agent, String value, String condition) {
         this.action = action.toLowerCase();
         this.agent = agent.toLowerCase();
         this.value = value;
+        this.condition = condition;
     }
 
     @Override
     public String toString() {
-        return action + " " + agent + " " + value;
+        return action + " " + agent + " " + value + " " + condition;
     }
 
     @Override
@@ -38,11 +40,12 @@ public class Action {
         Action action1 = (Action) o;
         return Objects.equals(action, action1.action) &&
                 Objects.equals(agent, action1.agent) &&
-                Objects.equals(value, action1.value);
+                Objects.equals(value, action1.value) &&
+                Objects.equals(condition, action1.condition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(action, agent, value);
+        return Objects.hash(action, agent, value, condition);
     }
 }

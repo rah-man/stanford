@@ -11,6 +11,7 @@ public class MainGUIPanel extends JPanel {
     private JScrollPane jScrollPane1;
     private JButton saveSentencesButton;
     private JEditorPane sentencesEditorPane;
+    private final int CLEAR_BUTTON_GAP = 5;
 
     public MainGUIPanel() {
         initComponents();
@@ -50,7 +51,7 @@ public class MainGUIPanel extends JPanel {
                                 .addComponent(saveSentencesButton)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(clearSentencesButton)
-                                .addGap(5, 5, 5))
+                                .addGap(CLEAR_BUTTON_GAP, CLEAR_BUTTON_GAP, CLEAR_BUTTON_GAP))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)

@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ConditionFrame {
-    private ArrayList<ArrayList<TreeNode>> conditionTree = new ArrayList<ArrayList<TreeNode>>();
+    protected ArrayList<ArrayList<TreeNode>> conditionTree = new ArrayList<ArrayList<TreeNode>>();
     protected ArrayList<Condition> condList;
     private final String ORMORE = "or more";
     private final String OF = "of";
     private final String ORMORE_SUBS = ">=";
+    private final String WITH = "with";
     private final int CONDITION = 0;
     private final int MOD = 1;
     private final int VALUE = 2;
@@ -33,6 +34,11 @@ public class ConditionFrame {
             if (treeList.size() == 1) {
                 Condition cond = new Condition(treeList.get(CONDITION).value, "=", "true");
                 condList.add(cond);
+            } else if (treeList.size() == 2) {
+                if (treeList.get(0).value.equals("without")) {
+                    Condition cond = new Condition(treeList.get(1).value, "=", "false");
+                    condList.add(cond);
+                }
             } else {
                 ArrayList<String> l = new ArrayList<String>();
                 for (TreeNode node : treeList) {
@@ -47,7 +53,11 @@ public class ConditionFrame {
                     }
                 }
 
-                String[] split = flatCondition.split(" ");
+                if (flatCondition.contains(WITH)) {
+                    flatCondition = flatCondition.replaceAll(WITH, "");
+                }
+
+                String[] split = flatCondition.trim().split(" ");
                 Condition cond = new Condition(split[CONDITION], split[MOD],
                         flattenStringList(Arrays.asList(Arrays.copyOfRange(split, VALUE, split.length))));
                 condList.add(cond);

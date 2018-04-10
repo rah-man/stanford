@@ -28,19 +28,23 @@ public class CaseFrameGenerator {
         TreeNode root = tree.getRoot();             // ROOT
         TreeNode head = root.children.get(ROOT);    // OFFER
 
+        try {
+            // should they be separated or combined??
+            caseFrame.actionFrame = getActionFrame(head);
+            caseFrame.conditionFrame = getConditionFrame(head);
+        } catch (NullPointerException e) {
+            //AND DO NOTHING?
+        }
+    }
+
+    private ArrayList<TreeNode> getHeadChildren(TreeNode head) {
         ArrayList<TreeNode> headChildren = new ArrayList<TreeNode>();
         for (TreeNode node : head.children) {
             if (!node.reln.equals("punct")) {
                 headChildren.add(node);
             }
         }
-
-        try {
-            caseFrame.actionFrame = getActionFrame(head, headChildren);
-            caseFrame.conditionFrame = getConditionFrame(head, headChildren);
-        } catch (NullPointerException e) {
-
-        }
+        return headChildren;
     }
 
     public ArrayList<Condition> getConditionList() {
@@ -51,9 +55,9 @@ public class CaseFrameGenerator {
         return (caseFrame.actionFrame != null) ? caseFrame.actionFrame.actionList : null;
     }
 
-    private ActionFrame getActionFrame(TreeNode head, ArrayList<TreeNode> headChildren) throws NullPointerException {
+    private ActionFrame getActionFrame(TreeNode head) {
         ActionFrame actFrame = new ActionFrame();
-
+        ArrayList<TreeNode> headChildren = getHeadChildren(head);
         Set<TreeNode> actTree = new TreeSet<TreeNode>();
         actTree.add(head);
         actTree.add(headChildren.get(DOBJ));
@@ -69,9 +73,20 @@ public class CaseFrameGenerator {
         return actFrame;
     }
 
-    private ConditionFrame getConditionFrame(TreeNode head, ArrayList<TreeNode> headChildren) throws NullPointerException {
+    private ConditionFrame getConditionFrame(TreeNode head) {
+        ConditionFrame conditionFrame = null;
+        try {
+            conditionFrame = getConditionFromRule1(head);
+        } catch (NullPointerException e) {
+            conditionFrame = getConditionFromRule2(head);
+        }
+        return conditionFrame;
+    }
+
+    private ConditionFrame getConditionFromRule1(TreeNode head) {
         // NEW RULE
         ConditionFrame condFrame = new ConditionFrame();
+        ArrayList<TreeNode> headChildren = getHeadChildren(head);
         // find nmod and conj from headChildren.get(DOBJ).children >__<
         TreeNode nmod = null;
         TreeNode conj = null;
@@ -140,6 +155,60 @@ public class CaseFrameGenerator {
         condFrame.addTree(new ArrayList<TreeNode>(aSet));
         condFrame.normaliseConditions();
         return condFrame;
+    }
+
+    private ConditionFrame getConditionFromRule2(TreeNode head) {
+        ConditionFrame conditionFrame = new ConditionFrame();
+        ArrayList<TreeNode> headChildren = getHeadChildren(head);
+
+        TreeNode depNode = findRelnInChildren(head, "dep");
+        TreeNode conditionHead = findConditionHead(depNode);
+
+        Set<TreeNode> conditionSet = new TreeSet<TreeNode>();
+        conditionSet.add(conditionHead);
+        conditionSet.add(findRelnInChildren(conditionHead, "case"));
+        conditionFrame.addTree(new ArrayList<TreeNode>(conditionSet));
+
+        conditionSet = new TreeSet<TreeNode>();
+        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(findRelnInChildren(conditionHead, "nmod"));
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.remove();
+            conditionSet.add(node);
+            queue.addAll(node.children);
+        }
+        conditionFrame.addTree(new ArrayList<TreeNode>(conditionSet));
+        conditionFrame.normaliseConditions();
+
+        return conditionFrame;
+    }
+
+    private TreeNode findConditionHead(TreeNode head) {
+        TreeNode node = findRelnInChildren(head, "nmod");
+        node = findRelnInChildren(node, "nmod");
+        if (node == null) {
+            node = findRelnInChildren(head, "nmod", true);
+        }
+        return node;
+    }
+
+    private TreeNode findRelnInChildren(TreeNode head, String relnName) {
+        return findRelnInChildren(head, relnName, false);
+    }
+
+    private TreeNode findRelnInChildren(TreeNode head, String relnName, boolean canContinue) {
+        TreeNode node = null;
+
+        for (TreeNode c : head.children) {
+            if (c.reln.equals(relnName)) {
+                node = c;
+                if (!canContinue) {
+                    break;
+                }
+            }
+        }
+
+        return node;
     }
 
     public CaseFrame getCaseFrame() {

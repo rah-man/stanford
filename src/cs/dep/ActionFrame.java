@@ -19,12 +19,14 @@ public class ActionFrame {
         for (ArrayList<TreeNode> treeList : actionTree) {
             String action = treeList.get(ACTION).value;
             String agent = "";
+            // how to identify these two values?
             String value = "";
+            String condition = "";
             for (int i = 1; i < treeList.size(); i++) {
                 agent += treeList.get(i).value + " ";
             }
 
-            Action act = new Action(action, agent.trim(), value.trim());
+            Action act = new Action(action, agent.trim(), value.trim(), condition.trim());
             actionList.add(act);
         }
 

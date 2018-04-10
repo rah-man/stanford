@@ -98,7 +98,7 @@ public class CaseFrameGUI extends JPanel {
         actionTable.setRowSelectionAllowed(true);
         actionTable.setColumnSelectionAllowed(false);
         actionTable.getColumnModel().getColumn(0).setMaxWidth(150);
-        actionTable.getColumnModel().getColumn(3).setMaxWidth(50);
+        actionTable.getColumnModel().getColumn(4).setMaxWidth(50);
 
         JScrollPane tableScrollPane = new JScrollPane(actionTable);
         tableScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -225,26 +225,30 @@ public class CaseFrameGUI extends JPanel {
             JLabel actionLabel = new JLabel("Action:");
             JLabel agentLabel = new JLabel("Agent");
             JLabel valueLabel = new JLabel("Value:");
+            JLabel conditionLabel = new JLabel("Condition:");
             JTextField actionField = new JTextField();
             JTextField agentField = new JTextField();
             JTextField valueField = new JTextField();
+            JTextField conditionField = new JTextField();
             JButton submitButton = new JButton("Submit");
             JButton cancelButton = new JButton("Cancel");
 
-            JPanel newConditionPanel = new JPanel(new GridLayout(4, 2));
+            JPanel newConditionPanel = new JPanel(new GridLayout(5, 2));
             newConditionPanel.add(actionLabel);
             newConditionPanel.add(actionField);
             newConditionPanel.add(agentLabel);
             newConditionPanel.add(agentField);
             newConditionPanel.add(valueLabel);
             newConditionPanel.add(valueField);
+            newConditionPanel.add(conditionLabel);
+            newConditionPanel.add(conditionField);
             newConditionPanel.add(submitButton);
             newConditionPanel.add(cancelButton);
 
             submitButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Action action = new Action(actionField.getText().toLowerCase(), agentField.getText(), valueField.getText());
+                    Action action = new Action(actionField.getText().toLowerCase(), agentField.getText(), valueField.getText(), conditionField.getText());
                     tableModel.addRow(action);
                     newActionFrame.dispose();
                 }
