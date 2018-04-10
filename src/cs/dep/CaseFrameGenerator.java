@@ -61,7 +61,6 @@ public class CaseFrameGenerator {
             if (!(node.reln.equals("det") || node.reln.equals("punct") || node.reln.equals("nmod")
                     || node.reln.equals("cc") || node.reln.equals("conj"))) {
                 actTree.add(node);
-                node.printNode();
             }
         }
 

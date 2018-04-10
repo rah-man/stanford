@@ -140,7 +140,7 @@ public class CaseFrameGUI extends JPanel {
     }
 
     public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new CaseFrameGUI().createAndShowGUI();
             }

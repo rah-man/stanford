@@ -9,7 +9,7 @@ public class ConditionFrame {
     protected ArrayList<Condition> condList;
     private final String ORMORE = "or more";
     private final String OF = "of";
-    private final String ORMORE_SUBS = "<=";
+    private final String ORMORE_SUBS = ">=";
     private final int CONDITION = 0;
     private final int MOD = 1;
     private final int VALUE = 2;
