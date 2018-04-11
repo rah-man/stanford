@@ -1,7 +1,7 @@
 package cs.dep;
 
 /**
- * Small container for CaseFrameGUI object. Nothing much.
+ * Small container for CaseFramePanel object. Nothing much.
  */
 public class CaseFrame {
     protected ConditionFrame conditionFrame;

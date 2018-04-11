@@ -11,9 +11,11 @@ public class ConditionFrame {
     private final String OF = "of";
     private final String ORMORE_SUBS = ">=";
     private final String WITH = "with";
+    private final String WITHOUT = "without";
     private final int CONDITION = 0;
     private final int MOD = 1;
     private final int VALUE = 2;
+    private final String[] mathSymbol = {"<", "=", ">", "!"};
 
     public ConditionFrame() {
         condList = new ArrayList<Condition>();
@@ -35,8 +37,11 @@ public class ConditionFrame {
                 Condition cond = new Condition(treeList.get(CONDITION).value, "=", "true");
                 condList.add(cond);
             } else if (treeList.size() == 2) {
-                if (treeList.get(0).value.equals("without")) {
+                if (treeList.get(0).value.equals(WITHOUT)) {
                     Condition cond = new Condition(treeList.get(1).value, "=", "false");
+                    condList.add(cond);
+                } else if (treeList.get(0).value.equals(WITH)) {
+                    Condition cond = new Condition(treeList.get(1).value, "=", "true");
                     condList.add(cond);
                 }
             } else {
@@ -69,10 +74,25 @@ public class ConditionFrame {
 
     private String flattenStringList(List<String> list) {
         String text = "";
+        boolean prevIsMathSymbol = false;
         for (String s : list) {
-            text += s + " ";
+            if (containsMathSymbol(s)) {
+                if (prevIsMathSymbol) {
+                    text = text.trim() + s + " ";
+                    prevIsMathSymbol = false;
+                } else {
+                    text += s + " ";
+                    prevIsMathSymbol = true;
+                }
+            } else {
+                text += s + " ";
+            }
         }
         return text.trim();
+    }
+
+    private boolean containsMathSymbol(String inputString) {
+        return Arrays.stream(mathSymbol).parallel().anyMatch(inputString::contains);
     }
 
     public String toString() {

@@ -159,7 +159,6 @@ public class CaseFrameGenerator {
 
     private ConditionFrame getConditionFromRule2(TreeNode head) {
         ConditionFrame conditionFrame = new ConditionFrame();
-        ArrayList<TreeNode> headChildren = getHeadChildren(head);
 
         TreeNode depNode = findRelnInChildren(head, "dep");
         TreeNode conditionHead = findConditionHead(depNode);
@@ -171,7 +170,11 @@ public class CaseFrameGenerator {
 
         conditionSet = new TreeSet<TreeNode>();
         LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
-        queue.add(findRelnInChildren(conditionHead, "nmod"));
+        TreeNode subTree = findRelnInChildren(conditionHead, "nmod");
+        if (subTree == null) {
+            subTree = findRelnInChildren(conditionHead, "conj");
+        }
+        queue.add(subTree);
         while (!queue.isEmpty()) {
             TreeNode node = queue.remove();
             conditionSet.add(node);
