@@ -56,7 +56,19 @@ public class CaseFrameGenerator {
     }
 
     private ActionFrame getActionFrame(TreeNode head) {
-        ActionFrame actFrame = new ActionFrame();
+        ActionFrame actFrame = null;
+        ArrayList<TreeNode> headChildren = getHeadChildren(head);
+        if (headChildren.get(0).reln.equals("dobj")) {
+            actFrame = getActionFrameFromRule1(head);
+        } else {
+            actFrame = getActionFrameFromRule2(head);
+        }
+
+        return actFrame;
+    }
+
+    private ActionFrame getActionFrameFromRule1(TreeNode head) {
+        ActionFrame actionFrame = new ActionFrame();
         ArrayList<TreeNode> headChildren = getHeadChildren(head);
         Set<TreeNode> actTree = new TreeSet<TreeNode>();
         actTree.add(head);
@@ -68,9 +80,33 @@ public class CaseFrameGenerator {
             }
         }
 
-        actFrame.addTree(new ArrayList<TreeNode>(actTree));
-        actFrame.normaliseAction();
-        return actFrame;
+        actionFrame.addTree(new ArrayList<TreeNode>(actTree));
+        actionFrame.normaliseAction();
+        return actionFrame;
+    }
+
+    private ActionFrame getActionFrameFromRule2(TreeNode head) {
+        ActionFrame actionFrame = new ActionFrame();
+        Set<TreeNode> actTree = new TreeSet<TreeNode>();
+        LinkedList<TreeNode> queue = new LinkedList<TreeNode>();
+        queue.add(head);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.removeFirst();
+            TreeNode parent = node.parent;
+            if (!node.value.equals(".") || (node.reln.equals("nmod") && parent != null && !parent.reln.equals("dep"))) {
+                actTree.add(node);
+            }
+
+            for (TreeNode c : node.children) {
+                if (!(node.reln.equals("dep") && c.reln.equals("nmod"))) {
+                    queue.add(c);
+                }
+            }
+        }
+
+        actionFrame.addTree(new ArrayList<TreeNode>(actTree));
+        actionFrame.normaliseAction();
+        return actionFrame;
     }
 
     private ConditionFrame getConditionFrame(TreeNode head) {
