@@ -30,9 +30,12 @@ public class CaseFramePanel extends JPanel {
     protected JSeparator editorConditionSeparator, conditionActionSeparator;
 
     public CaseFramePanel() {
+        this("Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.");
+    }
+
+    public CaseFramePanel(String text) {
         super(new GridLayout(3, 0));
 
-        String text = "Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.";
         DependencyParse dp = new DependencyParse(text);
         List<DependencyTree> parseTreeList = dp.parseSentence();
         cfGenerator = new CaseFrameGenerator(parseTreeList);
