@@ -7,7 +7,7 @@ import cs.dep.DependencyParse;
 import cs.dep.DependencyTree;
 
 import javax.swing.*;
-
+import javax.swing.GroupLayout.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,18 +28,22 @@ public class CaseFramePanel extends JPanel {
     protected JScrollPane editorPaneScroll, conditionScroll, actionScroll;
     protected JButton newConditionButton, removeConditionButton, newActionButton, removeActionButton, generateModelButton;
     protected JSeparator editorConditionSeparator, conditionActionSeparator;
+    protected GroupLayout.SequentialGroup horizontalSequentialGroup, verticalSequentialGroup;
+    protected boolean isLastFrame;
+    protected GroupLayout layout;
 
     public CaseFramePanel() {
-        this("Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.");
+        this("Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.", false);
     }
 
-    public CaseFramePanel(String text) {
+    public CaseFramePanel(String text, boolean isLastFrame) {
         super(new GridLayout(3, 0));
 
         DependencyParse dp = new DependencyParse(text);
         List<DependencyTree> parseTreeList = dp.parseSentence();
         cfGenerator = new CaseFrameGenerator(parseTreeList);
         this.text = dp.getText();
+        this.isLastFrame = isLastFrame;
 
         initBuild();
     }
@@ -90,8 +94,12 @@ public class CaseFramePanel extends JPanel {
             }
         });
 
-        GroupLayout layout = new GroupLayout(this);
+        layout = new GroupLayout(this);
+        horizontalSequentialGroup = layout.createSequentialGroup();
+        verticalSequentialGroup = layout.createSequentialGroup();
         this.setLayout(layout);
+        setHorizontalSequentialGroup();
+        setVerticalSequentialGroup();
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(editorPaneScroll, GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE)
@@ -99,44 +107,65 @@ public class CaseFramePanel extends JPanel {
                         .addComponent(actionScroll)
                         .addComponent(editorConditionSeparator)
                         .addComponent(conditionActionSeparator)
-                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(newConditionButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(removeConditionButton))
-                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(newActionButton)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(removeActionButton))
-                                        .addComponent(generateModelButton, GroupLayout.Alignment.TRAILING))
-                                .addContainerGap())
+                        .addGroup(GroupLayout.Alignment.TRAILING, horizontalSequentialGroup)
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(editorPaneScroll, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(conditionScroll, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(removeConditionButton)
-                                        .addComponent(newConditionButton))
-                                .addGap(18, 18, 18)
-                                .addComponent(editorConditionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(actionScroll, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(removeActionButton)
-                                        .addComponent(newActionButton))
-                                .addGap(18, 18, 18)
-                                .addComponent(conditionActionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(generateModelButton)
-                                .addGap(0, 16, Short.MAX_VALUE))
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(verticalSequentialGroup)
         );
+    }
+
+    private void setHorizontalSequentialGroup() {
+        GroupLayout.ParallelGroup parallelGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        GroupLayout.SequentialGroup firstInnerSequentialGroup = layout.createSequentialGroup();
+        GroupLayout.SequentialGroup secondInnerSequentialGroup = layout.createSequentialGroup();
+
+        parallelGroup.addGroup(GroupLayout.Alignment.TRAILING, firstInnerSequentialGroup);
+        firstInnerSequentialGroup.addComponent(newConditionButton);
+        firstInnerSequentialGroup.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
+        firstInnerSequentialGroup.addComponent(removeConditionButton);
+
+        parallelGroup.addGroup(GroupLayout.Alignment.TRAILING, secondInnerSequentialGroup);
+        secondInnerSequentialGroup.addComponent(newActionButton);
+        secondInnerSequentialGroup.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
+        secondInnerSequentialGroup.addComponent(removeActionButton);
+
+        if (isLastFrame) {
+            parallelGroup.addComponent(generateModelButton, GroupLayout.Alignment.TRAILING);
+        }
+
+        horizontalSequentialGroup.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+        horizontalSequentialGroup.addGroup(parallelGroup);
+        horizontalSequentialGroup.addContainerGap();
+    }
+
+    private void setVerticalSequentialGroup() {
+        GroupLayout.ParallelGroup firstParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        firstParallelGroup.addComponent(removeConditionButton);
+        firstParallelGroup.addComponent(newConditionButton);
+
+        GroupLayout.ParallelGroup secondParallelGroup = layout.createParallelGroup(GroupLayout.Alignment.LEADING);
+        secondParallelGroup.addComponent(removeActionButton);
+        secondParallelGroup.addComponent(newActionButton);
+
+        verticalSequentialGroup.addComponent(editorPaneScroll, GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE);
+        verticalSequentialGroup.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
+        verticalSequentialGroup.addComponent(conditionScroll, GroupLayout.PREFERRED_SIZE, 121, GroupLayout.PREFERRED_SIZE);
+        verticalSequentialGroup.addGap(18, 18, 18);
+        verticalSequentialGroup.addGroup(firstParallelGroup);
+        verticalSequentialGroup.addGap(18, 18, 18);
+        verticalSequentialGroup.addComponent(editorConditionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE);
+        verticalSequentialGroup.addGap(18, 18, 18);
+        verticalSequentialGroup.addComponent(actionScroll, GroupLayout.PREFERRED_SIZE, 120, GroupLayout.PREFERRED_SIZE);
+        verticalSequentialGroup.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED);
+        verticalSequentialGroup.addGroup(secondParallelGroup);
+        verticalSequentialGroup.addGap(18, 18, 18);
+        verticalSequentialGroup.addComponent(conditionActionSeparator, GroupLayout.PREFERRED_SIZE, 10, GroupLayout.PREFERRED_SIZE);
+
+        if (isLastFrame) {
+            verticalSequentialGroup.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED);
+            verticalSequentialGroup.addComponent(generateModelButton);
+            verticalSequentialGroup.addGap(0, 16, Short.MAX_VALUE);
+        }
     }
 
     public void createAndShowGUI() {

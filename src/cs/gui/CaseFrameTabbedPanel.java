@@ -3,7 +3,6 @@ package cs.gui;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.StringTokenizer;
 
 public class CaseFrameTabbedPanel extends JPanel {
     JTabbedPane caseTabbedPane;
@@ -14,8 +13,8 @@ public class CaseFrameTabbedPanel extends JPanel {
 
     private void initComponents(CaseFramePanel[] caseFrameList) {
         caseTabbedPane = new JTabbedPane();
-        for (CaseFramePanel framePanel : caseFrameList) {
-            caseTabbedPane.addTab("Case Frame", framePanel);
+        for (int i = 0; i < caseFrameList.length; i++) {
+            caseTabbedPane.addTab("Sentence " + (i + 1), caseFrameList[i]);
         }
 
         GroupLayout layout = new GroupLayout(this);
@@ -28,7 +27,7 @@ public class CaseFrameTabbedPanel extends JPanel {
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(caseTabbedPane, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(caseTabbedPane, GroupLayout.PREFERRED_SIZE, 700, GroupLayout.PREFERRED_SIZE))
         );
     }
 
@@ -47,11 +46,15 @@ public class CaseFrameTabbedPanel extends JPanel {
         }
 
         CaseFramePanel[] caseFrameList = new CaseFramePanel[textList.size()];
+        boolean isFinal = false;
         for (int i = 0; i < caseFrameList.length; i++) {
-            caseFrameList[i] = new CaseFramePanel(textList.get(i));
+            if (i == caseFrameList.length - 1) {
+                isFinal = true;
+            }
+            caseFrameList[i] = new CaseFramePanel(textList.get(i), isFinal);
         }
 
-        JFrame mainFrame = new JFrame("Add Sentences");
+        JFrame mainFrame = new JFrame("Case Frame");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         CaseFrameTabbedPanel newContentPane = new CaseFrameTabbedPanel(caseFrameList);
