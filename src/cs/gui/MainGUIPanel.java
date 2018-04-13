@@ -81,8 +81,9 @@ public class MainGUIPanel extends JFrame {
 
     private void saveSentencesButtonActionPerformed(ActionEvent evt, JEditorPane sentencesEditorPane) {
         System.out.println(sentencesEditorPane.getText());
-        new CaseFrameTabbedPanel(sentencesEditorPane.getText().trim()).setVisible(true);
-        close();
+        setVisible(false);
+        dispose();
+        new CaseFrameTabbedPanel(sentencesEditorPane.getText().trim());
     }
 
     private void close() {

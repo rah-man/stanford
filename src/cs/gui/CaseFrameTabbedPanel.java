@@ -3,12 +3,18 @@ package cs.gui;
 import cs.util.Sentences;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class CaseFrameTabbedPanel extends JPanel {
+public class CaseFrameTabbedPanel extends JFrame {
     JTabbedPane caseTabbedPane;
     JButton generateModelButton;
+    JPanel guiPanel;
+    CaseFramePanel[] caseFrameList;
 
     public CaseFrameTabbedPanel(String text) {
         Scanner scanner = new Scanner(Sentences.sentences());
@@ -18,7 +24,7 @@ public class CaseFrameTabbedPanel extends JPanel {
             textList.add(scanner.next().trim() + ".");
         }
 
-        CaseFramePanel[] caseFrameList = new CaseFramePanel[textList.size()];
+        caseFrameList = new CaseFramePanel[textList.size()];
         boolean isFinal = false;
         for (int i = 0; i < caseFrameList.length; i++) {
             caseFrameList[i] = new CaseFramePanel(textList.get(i), isFinal);
@@ -32,15 +38,21 @@ public class CaseFrameTabbedPanel extends JPanel {
     }
 
     private void initComponents(CaseFramePanel[] caseFrameList) {
+        guiPanel = new JPanel();
         caseTabbedPane = new JTabbedPane();
         generateModelButton = new JButton("Generate Model");
+        generateModelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                generateModelButtonActionPerformed(evt);
+            }
+        });
 
         for (int i = 0; i < caseFrameList.length; i++) {
             caseTabbedPane.addTab("Sentence " + (i + 1), caseFrameList[i]);
         }
 
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(guiPanel);
+        guiPanel.setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(caseTabbedPane, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE)
@@ -57,19 +69,40 @@ public class CaseFrameTabbedPanel extends JPanel {
                                 .addComponent(generateModelButton)
                                 .addGap(0, 12, Short.MAX_VALUE))
         );
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setContentPane(guiPanel);
+        pack();
+        setVisible(true);
+        setResizable(false);
+        setLocationRelativeTo(null);
+    }
+
+    private void generateModelButtonActionPerformed(ActionEvent evt) {
+        System.out.println("Get the information from each case frame.");
+        System.out.println("And generate the model. (Should have been done since ages).");
+        System.out.println("And close this pretty frame.");
+        setVisible(false);
+        dispose();
+    }
+
+    private void close() {
+        WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
     }
 
     public static void main(String[] args) {
-        JFrame mainFrame = new JFrame("Case Frame");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        CaseFrameTabbedPanel newContentPane = new CaseFrameTabbedPanel(Sentences.sentences());
-        newContentPane.setOpaque(true);
-        mainFrame.setContentPane(newContentPane);
-
-        mainFrame.pack();
-        mainFrame.setVisible(true);
-        mainFrame.setResizable(false);
-        mainFrame.setLocationRelativeTo(null);
+//        JFrame mainFrame = new JFrame("Case Frame");
+//        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//        CaseFrameTabbedPanel newContentPane = new CaseFrameTabbedPanel(Sentences.sentences());
+//        newContentPane.setOpaque(true);
+//        mainFrame.setContentPane(newContentPane);
+//
+//        mainFrame.pack();
+//        mainFrame.setVisible(true);
+//        mainFrame.setResizable(false);
+//        mainFrame.setLocationRelativeTo(null);
+        new CaseFrameTabbedPanel(Sentences.sentences());
     }
 }
