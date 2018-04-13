@@ -3,22 +3,25 @@ package cs.gui;
 import cs.util.Sentences;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 
-public class MainGUIPanel extends JPanel {
+public class MainGUIPanel extends JFrame {
     private JButton clearSentencesButton;
     private JScrollPane jScrollPane1;
     private JButton saveSentencesButton;
     private JEditorPane sentencesEditorPane;
-    private final int CLEAR_BUTTON_GAP = 5;
+    private JPanel guiPanel;
 
     public MainGUIPanel() {
+        setTitle("Add Sentences");
         initComponents();
     }
 
     private void initComponents() {
-
+        guiPanel = new JPanel();
         jScrollPane1 = new JScrollPane();
         sentencesEditorPane = new JEditorPane();
         saveSentencesButton = new JButton();
@@ -27,7 +30,7 @@ public class MainGUIPanel extends JPanel {
         sentencesEditorPane.setText(Sentences.sentences());
         jScrollPane1.setViewportView(sentencesEditorPane);
 
-        saveSentencesButton.setText("Add Sentences");
+        saveSentencesButton.setText("Save Sentences");
         saveSentencesButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 saveSentencesButtonActionPerformed(evt, sentencesEditorPane);
@@ -41,8 +44,8 @@ public class MainGUIPanel extends JPanel {
             }
         });
 
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
+        GroupLayout layout = new GroupLayout(guiPanel);
+        guiPanel.setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
@@ -51,7 +54,7 @@ public class MainGUIPanel extends JPanel {
                                 .addComponent(saveSentencesButton)
                                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(clearSentencesButton)
-                                .addGap(CLEAR_BUTTON_GAP, CLEAR_BUTTON_GAP, CLEAR_BUTTON_GAP))
+                                .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -63,6 +66,13 @@ public class MainGUIPanel extends JPanel {
                                         .addComponent(clearSentencesButton))
                                 .addContainerGap())
         );
+
+        setContentPane(guiPanel);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        pack();
+        setVisible(true);
+        setResizable(false);
+        setLocationRelativeTo(null);
     }
 
     private void clearSentencesButtonActionPerformed(ActionEvent evt) {
@@ -71,26 +81,32 @@ public class MainGUIPanel extends JPanel {
 
     private void saveSentencesButtonActionPerformed(ActionEvent evt, JEditorPane sentencesEditorPane) {
         System.out.println(sentencesEditorPane.getText());
+        new CaseFrameTabbedPanel(sentencesEditorPane.getText().trim()).setVisible(true);
+        close();
+    }
+
+    private void close() {
+        WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
     }
 
     public void createAndShowGUI() {
-        JFrame mainFrame = new JFrame("Add Sentences");
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        MainGUIPanel newContentPane = new MainGUIPanel();
-        newContentPane.setOpaque(true);
-        mainFrame.setContentPane(newContentPane);
-
-        mainFrame.pack();
-        mainFrame.setVisible(true);
-        mainFrame.setResizable(false);
-        mainFrame.setLocationRelativeTo(null);
+//        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//
+//        MainGUIPanel newContentPane = new MainGUIPanel();
+//        newContentPane.setOpaque(true);
+//        mainFrame.setContentPane(newContentPane);
+//
+//        mainFrame.pack();
+//        mainFrame.setVisible(true);
+//        mainFrame.setResizable(false);
+//        mainFrame.setLocationRelativeTo(null);
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new MainGUIPanel().createAndShowGUI();
+                new MainGUIPanel().setVisible(true);
             }
         });
     }
