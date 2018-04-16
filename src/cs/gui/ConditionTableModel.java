@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class ConditionTableModel extends GUITableModel {
     public ConditionTableModel(ArrayList<Condition> conditionList) {
-        this.columnNames = new String[]{"Condition", "Mod", "Value", "Check"};
+        this.columnNames = new String[]{"Condition", "Mod", "Value", "Or Conjunction", "Check"};
         this.dataList = (conditionList != null) ? conditionList : new ArrayList<Condition>();
         fillTable(conditionList);
     }
@@ -15,7 +15,7 @@ public class ConditionTableModel extends GUITableModel {
     private void fillTable(ArrayList<Condition> conditionList) {
         if (conditionList != null) {
             for (Condition condition : conditionList) {
-                data.add(new Object[]{condition.condition, condition.mod, condition.value, f});
+                data.add(new Object[]{condition.condition, condition.mod, condition.value, f, f});
             }
         }
     }
@@ -41,7 +41,12 @@ public class ConditionTableModel extends GUITableModel {
     public void addRow(Object obj) {
         Condition condition = (Condition) obj;
         dataList.add(condition);
-        data.add(new Object[]{condition.condition, condition.mod, condition.value, f});
+        data.add(new Object[]{condition.condition, condition.mod, condition.value, f, f});
         fireTableDataChanged();
+    }
+
+    @Override
+    public boolean isCellEditable(int row, int col) {
+        return (col >= columnNames.length - 2) ? true : false;
     }
 }
