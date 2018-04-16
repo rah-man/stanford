@@ -4,7 +4,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 
 public abstract class GUITableModel extends AbstractTableModel {
-    protected String[] columnNames;
+    public String[] columnNames;
     protected ArrayList<Object[]> data = new ArrayList<Object[]>();
     protected Boolean f = false;
     protected ArrayList dataList = new ArrayList();

@@ -79,7 +79,6 @@ public class CaseFramePanel extends JPanel {
         newConditionButton = new JButton("New Condition");
         removeConditionButton = new JButton("Remove Conditions");
         actionScroll = new JScrollPane();
-        actionTable = new JTable();
         editorConditionSeparator = new JSeparator();
         newActionButton = new JButton("New Action");
         removeActionButton = new JButton("Remove Actions");
@@ -211,6 +210,14 @@ public class CaseFramePanel extends JPanel {
                 new CaseFramePanel().createAndShowGUI();
             }
         });
+    }
+
+    public JTable getConditionTable() {
+        return conditionTable;
+    }
+
+    public JTable getActionTable() {
+        return actionTable;
     }
 
     class AddConditionButtonListener implements ActionListener {
