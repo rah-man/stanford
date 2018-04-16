@@ -27,7 +27,7 @@ public class CaseFrameTabbedPanel extends JFrame {
         caseFrameList = new CaseFramePanel[textList.size()];
         boolean isFinal = false;
         for (int i = 0; i < caseFrameList.length; i++) {
-            caseFrameList[i] = new CaseFramePanel(textList.get(i), isFinal, i+1);
+            caseFrameList[i] = new CaseFramePanel(textList.get(i), isFinal, i + 1);
         }
 
         initComponents(caseFrameList);
@@ -79,11 +79,17 @@ public class CaseFrameTabbedPanel extends JFrame {
     }
 
     private void generateModelButtonActionPerformed(ActionEvent evt) {
-        System.out.println("Get the information from each case frame.");
-        System.out.println("And generate the model. (Should have been done since ages).");
-        System.out.println("And close this pretty frame.");
-        setVisible(false);
-        dispose();
+        int response = JOptionPane.showConfirmDialog(null, "All sentences have been checked?",
+                "Confirmation", JOptionPane.YES_NO_OPTION);
+        System.out.println("Answer: " + response);
+        if (response == JOptionPane.YES_OPTION) {
+            //TO DO: change the implementation to model generation
+            System.out.println("Get the information from each case frame.");
+            System.out.println("And generate the model. (Should have been done since ages).");
+            System.out.println("And close this pretty frame.");
+            setVisible(false);
+            dispose();
+        }
     }
 
     private void close() {
