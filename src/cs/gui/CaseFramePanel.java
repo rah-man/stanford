@@ -15,6 +15,7 @@ import javax.swing.JTable;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,18 +34,41 @@ public class CaseFramePanel extends JPanel {
     protected GroupLayout layout;
 
     public CaseFramePanel() {
-        this("Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.", false);
+        this("Control blood pressure to targets of 120-129/<80 mmHg in people with diabetes or with ACR >= 70 mg/mmol.", false, 1);
     }
 
-    public CaseFramePanel(String text, boolean isLastFrame) {
+    public CaseFramePanel(String text, boolean isLastFrame, int sentIndex) {
         super(new GridLayout(3, 0));
 
-        DependencyParse dp = new DependencyParse(text);
-        List<DependencyTree> parseTreeList = dp.parseSentence();
+        boolean fromFile = true;
+        String filePath = "sentence-" + sentIndex + ".ser";
+        File serialisedFile = new File(filePath);
+        DependencyParse dp = null;
+        List<DependencyTree> parseTreeList = null;
+
+        if (serialisedFile.isFile() && fromFile) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(serialisedFile))) {
+                System.out.println("reading from file");
+                dp = (DependencyParse) ois.readObject();
+                parseTreeList = dp.dependencyTrees;
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(serialisedFile))) {
+                System.out.println("writing to file");
+                dp = new DependencyParse(text);
+                parseTreeList = dp.parseSentence();
+
+                oos.writeObject(dp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         cfGenerator = new CaseFrameGenerator(parseTreeList);
         this.text = dp.getText();
         this.isLastFrame = isLastFrame;
-
         initBuild();
     }
 

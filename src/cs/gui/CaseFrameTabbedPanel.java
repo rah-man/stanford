@@ -27,7 +27,7 @@ public class CaseFrameTabbedPanel extends JFrame {
         caseFrameList = new CaseFramePanel[textList.size()];
         boolean isFinal = false;
         for (int i = 0; i < caseFrameList.length; i++) {
-            caseFrameList[i] = new CaseFramePanel(textList.get(i), isFinal);
+            caseFrameList[i] = new CaseFramePanel(textList.get(i), isFinal, i+1);
         }
 
         initComponents(caseFrameList);
