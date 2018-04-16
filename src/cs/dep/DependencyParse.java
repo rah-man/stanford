@@ -8,15 +8,17 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.logging.Redwood;
 
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.*;
 
-public class DependencyParse {
-    protected Redwood.RedwoodChannels log = Redwood.channels(new Object[]{edu.stanford.nlp.parser.nndep.demo.DependencyParserDemo.class});
-    protected MaxentTagger tagger = null;
-    protected edu.stanford.nlp.parser.nndep.DependencyParser parser = null;
+public class DependencyParse implements Serializable {
+    protected transient Redwood.RedwoodChannels log = Redwood.channels(new Object[]{edu.stanford.nlp.parser.nndep.demo.DependencyParserDemo.class});
+    protected transient MaxentTagger tagger = null;
+    protected transient edu.stanford.nlp.parser.nndep.DependencyParser parser = null;
     protected String modelPath, taggerPath, text;
     protected Collection<TypedDependency> dependencies;
+    public List<DependencyTree> dependencyTrees;
 
     public DependencyParse() {
         this("edu/stanford/nlp/models/parser/nndep/english_UD.gz",
@@ -77,6 +79,7 @@ public class DependencyParse {
             treeList.add(new DependencyTree(nodeMap));
         }
 
+        dependencyTrees = treeList;
         return treeList;
     }
 

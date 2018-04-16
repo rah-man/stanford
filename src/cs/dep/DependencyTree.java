@@ -1,8 +1,9 @@
 package cs.dep;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-public class DependencyTree {
+public class DependencyTree implements Serializable {
     private LinkedHashMap<Integer, TreeNode> tree;
 
     public DependencyTree() {

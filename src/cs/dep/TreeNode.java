@@ -1,8 +1,9 @@
 package cs.dep;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class TreeNode implements Comparable<TreeNode> {
+public class TreeNode implements Comparable<TreeNode>, Serializable {
     protected String value;
     protected String tag;
     protected int index;
