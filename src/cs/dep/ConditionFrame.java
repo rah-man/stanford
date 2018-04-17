@@ -16,6 +16,7 @@ public class ConditionFrame {
     private final int MOD = 1;
     private final int VALUE = 2;
     private final String[] mathSymbol = {"<", "=", ">", "!"};
+    private final boolean OR = false;
 
     public ConditionFrame() {
         condList = new ArrayList<Condition>();
@@ -34,14 +35,14 @@ public class ConditionFrame {
     public ArrayList<Condition> normaliseConditions() {
         for (ArrayList<TreeNode> treeList : conditionTree) {
             if (treeList.size() == 1) {
-                Condition cond = new Condition(treeList.get(CONDITION).value, "=", "true");
+                Condition cond = new Condition(treeList.get(CONDITION).value, "=", "true", OR);
                 condList.add(cond);
             } else if (treeList.size() == 2) {
                 if (treeList.get(0).value.equals(WITHOUT)) {
-                    Condition cond = new Condition(treeList.get(1).value, "=", "false");
+                    Condition cond = new Condition(treeList.get(1).value, "=", "false", OR);
                     condList.add(cond);
                 } else if (treeList.get(0).value.equals(WITH)) {
-                    Condition cond = new Condition(treeList.get(1).value, "=", "true");
+                    Condition cond = new Condition(treeList.get(1).value, "=", "true", OR);
                     condList.add(cond);
                 }
             } else {
@@ -64,7 +65,7 @@ public class ConditionFrame {
 
                 String[] split = flatCondition.trim().split(" ");
                 Condition cond = new Condition(split[CONDITION], split[MOD],
-                        flattenStringList(Arrays.asList(Arrays.copyOfRange(split, VALUE, split.length))));
+                        flattenStringList(Arrays.asList(Arrays.copyOfRange(split, VALUE, split.length))), OR);
                 condList.add(cond);
             }
         }
@@ -101,6 +102,10 @@ public class ConditionFrame {
             output += c.toString() + "\n";
         }
         return output;
+    }
+
+    public ArrayList<Condition> getCondList() {
+        return condList;
     }
 }
 

@@ -30,7 +30,7 @@ public class CaseFramePanel extends JPanel {
     protected JButton newConditionButton, removeConditionButton, newActionButton, removeActionButton, generateModelButton;
     protected JSeparator editorConditionSeparator, conditionActionSeparator;
     protected GroupLayout.SequentialGroup horizontalSequentialGroup, verticalSequentialGroup;
-    protected boolean isLastFrame;
+    protected boolean isLastFrame, orConjunction;
     protected GroupLayout layout;
 
     public CaseFramePanel() {
@@ -69,6 +69,7 @@ public class CaseFramePanel extends JPanel {
         cfGenerator = new CaseFrameGenerator(parseTreeList);
         this.text = dp.getText();
         this.isLastFrame = isLastFrame;
+        orConjunction = false;
         initBuild();
     }
 
@@ -290,7 +291,7 @@ public class CaseFramePanel extends JPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     Condition condition = new Condition(conditionField.getText(),
-                            modField.getText(), valueField.getText());
+                            modField.getText(), valueField.getText(), orConjunction);
                     tableModel.addRow(condition);
                     newConditionFrame.dispose();
                 }
