@@ -7,6 +7,8 @@ import cs.gui.*;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ModelGenerator {
     protected static final int CONDITION = 0;
@@ -18,9 +20,11 @@ public class ModelGenerator {
     protected static final int ACTION_VALUE = 2;
     protected static final int ACTION_CONDITION = 4;
 
-    CaseFramePanel[] caseFramePanels;
-    ArrayList<ArrayList<Condition>> conditions;
-    ArrayList<ArrayList<Action>> actions;
+
+    protected CaseFramePanel[] caseFramePanels;
+    protected ArrayList<ArrayList<Condition>> conditions;
+    protected ArrayList<ArrayList<Action>> actions;
+    protected Set<String> declarationSet, assertionSet;
 
     public ModelGenerator() {
         this(null);
@@ -30,6 +34,8 @@ public class ModelGenerator {
         this.caseFramePanels = caseFramePanels;
         conditions = new ArrayList<ArrayList<Condition>>();
         actions = new ArrayList<ArrayList<Action>>();
+        declarationSet = new LinkedHashSet<String>();
+        assertionSet = new LinkedHashSet<String>();
 
         getFrames();
     }
@@ -39,12 +45,13 @@ public class ModelGenerator {
             getActionFrames(caseFramePanel);
             getConditionFrame(caseFramePanel);
         }
-
-        getConditionConstants();
-        getActionConstants();
+        getConditionAndActionConstants();
+        declarationSet.forEach(System.out::println);
+        System.out.println();
+        assertionSet.forEach(System.out::println);
     }
 
-    private void getConditionConstants() {
+    private void getConditionAndActionConstants() {
         for (int i = 0; i < conditions.size(); i++) {
             ArrayList<Condition> c = conditions.get(i);
             boolean orConj = c.stream()
@@ -59,26 +66,22 @@ public class ModelGenerator {
                 Constant constant = ConstantFactory.generateConstant(cond);
                 cons[consIndex++] = constant;
 
-                System.out.println(constant.declareConstant());
+                declarationSet.add(constant.declareConstant());
                 if (!orConj) {
-                    System.out.println(constant.assertConstant());
+                    assertionSet.add(constant.assertConstant());
                 }
             }
 
             if (orConj) {
-                System.out.println(ConstantFactory.assertCombineConstant("or", cons));
+                assertionSet.add(ConstantFactory.assertCombineConstant("or", cons));
             }
-            System.out.println();
-        }
-    }
 
-    private void getActionConstants() {
-        for (int i = 0; i < actions.size(); i++) {
             ArrayList<Action> a = actions.get(i);
             for (Action act : a) {
                 Constant[] constants = ConstantFactory.generateConstant(act);
-                for (Constant cons : constants) {
-                    System.out.println(cons);
+                for (Constant actionCons : constants) {
+                    declarationSet.add(actionCons.declareConstant());
+                    assertionSet.add(actionCons.assertConstant());
                 }
             }
         }

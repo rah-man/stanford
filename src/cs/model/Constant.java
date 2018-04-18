@@ -2,6 +2,7 @@ package cs.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -55,5 +56,18 @@ public class Constant<E> {
         }
 
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Constant<?> constant = (Constant<?>) o;
+        return Objects.equals(name, constant.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
