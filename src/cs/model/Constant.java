@@ -2,6 +2,7 @@ package cs.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class Constant<E> {
@@ -10,9 +11,19 @@ public class Constant<E> {
     protected E value;
 
     public Constant(String name, String mod, E value) {
-        this.name = name.toLowerCase();
+        this.name = cleanName(name);
         this.mod = mod;
         this.value = value;
+    }
+
+    private String cleanName(String name) {
+        name = name.toLowerCase();
+        String[] splitName = name.split(" ");
+        StringJoiner joiner = new StringJoiner("-");
+        for (String word : splitName) {
+            joiner.add(word);
+        }
+        return Arrays.stream(splitName).map(s -> s).collect(Collectors.joining("-"));
     }
 
     public String toString() {
