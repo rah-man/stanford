@@ -2,7 +2,7 @@ package cs.dep;
 
 import java.util.Objects;
 
-public class Condition {
+public class Condition<E> {
     // public because getters are too much
     public String condition;
     public String mod;
@@ -47,5 +47,9 @@ public class Condition {
     @Override
     public int hashCode() {
         return Objects.hash(condition, mod, value, or);
+    }
+
+    public boolean getOR() {
+        return or;
     }
 }
