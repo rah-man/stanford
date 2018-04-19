@@ -6,6 +6,7 @@ public class ActionFrame {
     private ArrayList<ArrayList<TreeNode>> actionTree = new ArrayList<ArrayList<TreeNode>>();
     protected ArrayList<Action> actionList;
     private final int ACTION = 0;
+    protected final boolean OR = false;
 
     public ActionFrame() {
         actionList = new ArrayList<Action>();
@@ -52,7 +53,7 @@ public class ActionFrame {
                     agent += treeList.get(i).value + " ";
                 }
             }
-            Action act = new Action(action, agent.trim(), value.trim(), condition.trim());
+            Action act = new Action(action, agent.trim(), value.trim(), condition.trim(), OR);
             actionList.add(act);
         }
 
