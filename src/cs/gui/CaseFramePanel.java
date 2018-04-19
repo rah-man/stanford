@@ -103,7 +103,8 @@ public class CaseFramePanel extends JPanel {
         actionTable.setFillsViewportHeight(true);
         actionTable.setRowSelectionAllowed(true);
         actionTable.setColumnSelectionAllowed(false);
-        actionTable.getColumnModel().getColumn(4).setMaxWidth(150);
+        actionTable.getColumnModel().getColumn(0).setMaxWidth(150);
+        actionTable.getColumnModel().getColumn(5).setMaxWidth(150);
         actionTable.getTableHeader().setReorderingAllowed(false);
         actionScroll.setViewportView(actionTable);
         newActionButton.addActionListener(new AddActionButtonListener(actionTable));
@@ -388,7 +389,7 @@ public class CaseFramePanel extends JPanel {
             submitButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    Action action = new Action(actionField.getText().toLowerCase(), agentField.getText(), valueField.getText(), conditionField.getText());
+                    Action action = new Action(actionField.getText().toLowerCase(), agentField.getText(), valueField.getText(), conditionField.getText(), orConjunction);
                     tableModel.addRow(action);
                     newActionFrame.dispose();
                 }

@@ -57,7 +57,7 @@ public class CaseFrameTabbedPanel extends JFrame {
         guiPanel.setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(caseTabbedPane, GroupLayout.PREFERRED_SIZE, 600, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(caseTabbedPane, GroupLayout.PREFERRED_SIZE, 900, GroupLayout.PREFERRED_SIZE)
                         .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(generateModelButton)
