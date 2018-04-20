@@ -7,6 +7,7 @@ import cs.gui.*;
 import javax.swing.*;
 import javax.swing.table.TableModel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -18,7 +19,8 @@ public class ModelGenerator {
     protected static final int ACTION = 0;
     protected static final int AGENT = 1;
     protected static final int ACTION_VALUE = 2;
-    protected static final int ACTION_CONDITION = 4;
+    protected static final int ACTION_CONDITION = 3;
+    protected static final int ACTION_OR_CONDITION = 4;
 
 
     protected CaseFramePanel[] caseFramePanels;
@@ -77,12 +79,27 @@ public class ModelGenerator {
             }
 
             ArrayList<Action> a = actions.get(i);
+            ArrayList<Constant> constList = new ArrayList<Constant>();
+            orConj = a.stream()
+                    .filter(s -> s.or == true)
+                    .map(Action::getOR)
+                    .findAny()
+                    .orElse(false);
+
             for (Action act : a) {
                 Constant[] constants = ConstantFactory.generateConstant(act);
+                constList.addAll(Arrays.asList(ConstantFactory.generateConstant(act)));
                 for (Constant actionCons : constants) {
                     declarationSet.add(actionCons.declareConstant());
-                    assertionSet.add(actionCons.assertConstant());
+
+                    if (!orConj) {
+                        assertionSet.add(actionCons.assertConstant());
+                    }
                 }
+            }
+
+            if (orConj) {
+                assertionSet.add(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
             }
         }
     }
@@ -97,7 +114,8 @@ public class ModelGenerator {
             Action action = new Action((String) actionModel.getValueAt(i, ACTION),
                     (String) actionModel.getValueAt(i, AGENT),
                     (String) actionModel.getValueAt(i, ACTION_VALUE),
-                    Boolean.toString((boolean) actionModel.getValueAt(i, ACTION_CONDITION)));
+                    (String) actionModel.getValueAt(i, ACTION_CONDITION),
+                    (boolean) actionModel.getValueAt(i, ACTION_OR_CONDITION));
             actionList.add(action);
         }
 

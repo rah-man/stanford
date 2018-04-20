@@ -51,4 +51,8 @@ public class Action {
     public int hashCode() {
         return Objects.hash(action, agent, value, condition, or);
     }
+
+    public boolean getOR() {
+        return or;
+    }
 }
