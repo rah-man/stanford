@@ -20,10 +20,10 @@ public class CaseFrameTabbedPanel extends JFrame {
 
     public CaseFrameTabbedPanel(String text) {
         Scanner scanner = new Scanner(Sentences.sentences());
-        scanner.useDelimiter("\\.");
+        scanner.useDelimiter("\n");
         ArrayList<String> textList = new ArrayList<String>();
         while (scanner.hasNext()) {
-            textList.add(scanner.next().trim() + ".");
+            textList.add(scanner.next().trim());
         }
 
         caseFrameList = new CaseFramePanel[textList.size()];
