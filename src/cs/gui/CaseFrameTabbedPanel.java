@@ -83,7 +83,6 @@ public class CaseFrameTabbedPanel extends JFrame {
     private void generateModelButtonActionPerformed(ActionEvent evt) {
         int response = JOptionPane.showConfirmDialog(null, "All sentences have been checked?",
                 "Confirmation", JOptionPane.YES_NO_OPTION);
-        System.out.println("Answer: " + response);
         if (response == JOptionPane.YES_OPTION) {
             //TO DO: change the implementation to model generation
             ModelGenerator modelGenerator = new ModelGenerator(caseFrameList);

@@ -11,6 +11,10 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * Generate some assertion statements. For one CaseFramePanel, there should be an (bi)implication
+ * from a list of conditions to an action.
+ */
 public class ModelGenerator {
     protected static final int CONDITION = 0;
     protected static final int MOD = 1;
@@ -48,6 +52,9 @@ public class ModelGenerator {
             getConditionFrame(caseFramePanel);
         }
         getConditionAndActionConstants();
+
+        System.exit(0);
+
         declarationSet.forEach(System.out::println);
         System.out.println();
         assertionSet.forEach(System.out::println);
@@ -55,6 +62,9 @@ public class ModelGenerator {
 
     private void getConditionAndActionConstants() {
         for (int i = 0; i < conditions.size(); i++) {
+            ArrayList<Constant> conditionList = new ArrayList<Constant>();
+            ArrayList<Constant> actionList = new ArrayList<Constant>();
+
             ArrayList<Condition> c = conditions.get(i);
             boolean orConj = c.stream()
                     .filter(s -> s.or == true)
@@ -68,14 +78,19 @@ public class ModelGenerator {
                 Constant constant = ConstantFactory.generateConstant(cond);
                 cons[consIndex++] = constant;
 
+                conditionList.add(constant);
+
                 declarationSet.add(constant.declareConstant());
+//                System.out.println(constant.declareConstant());
                 if (!orConj) {
                     assertionSet.add(constant.assertConstant());
+//                    System.out.println(constant.assignConstant());
                 }
             }
 
             if (orConj) {
                 assertionSet.add(ConstantFactory.assertCombineConstant("or", cons));
+//                System.out.println(ConstantFactory.assertCombineConstant("or", cons));
             }
 
             ArrayList<Action> a = actions.get(i);
@@ -88,19 +103,24 @@ public class ModelGenerator {
 
             for (Action act : a) {
                 Constant[] constants = ConstantFactory.generateConstant(act);
+                actionList.addAll(Arrays.asList(constants));
                 constList.addAll(Arrays.asList(ConstantFactory.generateConstant(act)));
                 for (Constant actionCons : constants) {
                     declarationSet.add(actionCons.declareConstant());
-
+//                    System.out.println(actionCons.declareConstant());
                     if (!orConj) {
                         assertionSet.add(actionCons.assertConstant());
+//                        System.out.println(actionCons.assignConstant());
                     }
                 }
             }
 
             if (orConj) {
                 assertionSet.add(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
+//                System.out.println(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
             }
+
+            Sentence sentence = new Sentence(conditionList, actionList);
         }
     }
 
