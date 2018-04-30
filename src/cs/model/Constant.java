@@ -1,5 +1,7 @@
 package cs.model;
 
+import cs.util.ConstantEnum;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +49,7 @@ public class Constant<E> {
         return "(" + mod + " " + name + " " + value + ")";
     }
 
-    private String getType() {
+    protected String getType() {
         String type = "Int";
         if (value instanceof Boolean) {
             type = "Bool";
@@ -56,6 +58,23 @@ public class Constant<E> {
         }
 
         return type;
+    }
+
+    protected ConstantEnum getMod() {
+        // default EQ
+        ConstantEnum modEnum = ConstantEnum.EQ;
+
+        if (mod.equals(">")) {
+            modEnum = ConstantEnum.GT;
+        } else if (mod.equals(">=")) {
+            modEnum = ConstantEnum.GTE;
+        } else if (mod.equals("<")) {
+            modEnum = ConstantEnum.LT;
+        } else if (mod.equals("<=")) {
+            modEnum = ConstantEnum.LTE;
+        }
+
+        return modEnum;
     }
 
     @Override
