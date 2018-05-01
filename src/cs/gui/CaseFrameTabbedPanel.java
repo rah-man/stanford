@@ -86,6 +86,7 @@ public class CaseFrameTabbedPanel extends JFrame {
         if (response == JOptionPane.YES_OPTION) {
             //TO DO: change the implementation to model generation
             ModelGenerator modelGenerator = new ModelGenerator(caseFrameList);
+            ModelFrame modelFrame = new ModelFrame(modelGenerator);
             setVisible(false);
             dispose();
         }
