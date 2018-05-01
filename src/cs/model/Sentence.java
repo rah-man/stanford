@@ -4,6 +4,7 @@ import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import com.microsoft.z3.IntExpr;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import cs.util.ConstantEnum;
 
 import java.util.ArrayList;
@@ -94,13 +95,22 @@ public class Sentence {
 
         if (bpAction) {
             setBPBiimplication(combinedCondition);
+        } else if (orAct) {
+            setOrActionBiimplication(combinedCondition);
         } else {
             setNormalBiimplication(combinedCondition);
         }
     }
 
+    private void setOrActionBiimplication(BoolExpr combinedCondition) {
+        // combine all actions into one or expression
+        BoolExpr orActionExpression = ctx.mkOr(actAssignments.stream().toArray(BoolExpr[]::new));
+        BoolExpr fin = ctx.mkIff(combinedCondition, orActionExpression);
+        sentenceExpression.add(fin);
+    }
+
     private void setBPBiimplication(BoolExpr combinedCondition) {
-        // combine all actions into one biimplication
+        // combine all actions into one and expression
         BoolExpr andActionExpression = ctx.mkAnd(actAssignments.stream().toArray(BoolExpr[]::new));
         BoolExpr fin = ctx.mkIff(combinedCondition, andActionExpression);
         sentenceExpression.add(fin);
