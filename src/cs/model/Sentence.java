@@ -40,9 +40,9 @@ public class Sentence {
 
         setBiimplicationFromAssignments();
 
-        System.out.println("\nDECLARATION (OF WAR)");
-        actAssignments.forEach(System.out::println);
-        condAssignments.forEach(System.out::println);
+//        System.out.println("\nDECLARATION (OF WAR)");
+//        actAssignments.forEach(System.out::println);
+//        condAssignments.forEach(System.out::println);
 
         System.out.println("\nSENTENCE");
         for (Expr e : sentenceExpression) {

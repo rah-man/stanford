@@ -30,15 +30,12 @@ public class Z3Model {
     }
 
     public BoolExpr andAllSentences() {
-        Sentence s = sentences.get(0);
-        BoolExpr subSentence = ctx.mkAnd(s.sentenceExpression.stream().toArray(BoolExpr[]::new));
-        BoolExpr andAll = subSentence;
-
-        for (int i = 1; i < sentences.size() - 1; i++) {
-            Sentence sent = sentences.get(i);
-            BoolExpr subS = ctx.mkAnd(sent.sentenceExpression.stream().toArray(BoolExpr[]::new));
-            andAll = ctx.mkAnd(subS, andAll);
+        ArrayList<Expr> allSent = new ArrayList<Expr>();
+        for (Sentence sent : sentences) {
+            allSent.addAll(sent.sentenceExpression);
         }
+
+        BoolExpr andAll = ctx.mkAnd(allSent.stream().toArray(BoolExpr[]::new));
 
         return andAll;
     }
