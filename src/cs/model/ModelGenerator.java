@@ -31,6 +31,7 @@ public class ModelGenerator {
     protected ArrayList<ArrayList<Condition>> conditions;
     protected ArrayList<ArrayList<Action>> actions;
     protected Set<String> declarationSet, assertionSet;
+    protected ArrayList<Sentence> sentences;
 
     public ModelGenerator() {
         this(null);
@@ -42,6 +43,7 @@ public class ModelGenerator {
         actions = new ArrayList<ArrayList<Action>>();
         declarationSet = new LinkedHashSet<String>();
         assertionSet = new LinkedHashSet<String>();
+        sentences = new ArrayList<Sentence>();
 
         getFrames();
     }
@@ -66,7 +68,7 @@ public class ModelGenerator {
             ArrayList<Constant> actionList = new ArrayList<Constant>();
 
             ArrayList<Condition> c = conditions.get(i);
-            boolean orConj = c.stream()
+            boolean orCond = c.stream()
                     .filter(s -> s.or == true)
                     .map(Condition::getOR)
                     .findAny()
@@ -82,20 +84,20 @@ public class ModelGenerator {
 
                 declarationSet.add(constant.declareConstant());
 //                System.out.println(constant.declareConstant());
-                if (!orConj) {
+                if (!orCond) {
                     assertionSet.add(constant.assertConstant());
 //                    System.out.println(constant.assignConstant());
                 }
             }
 
-            if (orConj) {
+            if (orCond) {
                 assertionSet.add(ConstantFactory.assertCombineConstant("or", cons));
 //                System.out.println(ConstantFactory.assertCombineConstant("or", cons));
             }
 
             ArrayList<Action> a = actions.get(i);
             ArrayList<Constant> constList = new ArrayList<Constant>();
-            orConj = a.stream()
+            boolean orAct = a.stream()
                     .filter(s -> s.or == true)
                     .map(Action::getOR)
                     .findAny()
@@ -108,19 +110,20 @@ public class ModelGenerator {
                 for (Constant actionCons : constants) {
                     declarationSet.add(actionCons.declareConstant());
 //                    System.out.println(actionCons.declareConstant());
-                    if (!orConj) {
+                    if (!orCond) {
                         assertionSet.add(actionCons.assertConstant());
 //                        System.out.println(actionCons.assignConstant());
                     }
                 }
             }
 
-            if (orConj) {
+            if (orAct) {
                 assertionSet.add(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
 //                System.out.println(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
             }
 
-            Sentence sentence = new Sentence(conditionList, actionList);
+            Sentence sentence = new Sentence(conditionList, actionList, orCond, orAct);
+            sentences.add(sentence);
         }
     }
 

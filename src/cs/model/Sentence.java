@@ -4,25 +4,23 @@ import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import com.microsoft.z3.IntExpr;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import cs.util.ConstantEnum;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Sentence {
-    protected ArrayList<Constant> conditions;
-    protected ArrayList<Constant> actions;
+    protected ArrayList<Constant> conditions, actions;
     protected Context ctx;
     protected HashMap<String, String> cfg;
-    ArrayList<Expr> declarations;
-    ArrayList<Expr> condAssignments;
-    ArrayList<Expr> actAssignments;
-    ArrayList<Expr> sentExpression;
+    protected ArrayList<Expr> declarations, condAssignments, actAssignments, sentenceExpression;
+    protected boolean orCond, orAct;
 
-    public Sentence(ArrayList<Constant> conditions, ArrayList<Constant> actions) {
+    public Sentence(ArrayList<Constant> conditions, ArrayList<Constant> actions, boolean orCond, boolean orAct) {
         this.conditions = conditions;
         this.actions = actions;
+        this.orCond = orCond;
+        this.orAct = orAct;
 
         cfg = new HashMap<String, String>();
         cfg.put("model", "true");
@@ -31,7 +29,7 @@ public class Sentence {
         declarations = new ArrayList<Expr>();
         condAssignments = new ArrayList<Expr>();
         actAssignments = new ArrayList<Expr>();
-        sentExpression = new ArrayList<Expr>();
+        sentenceExpression = new ArrayList<Expr>();
 
         getSentenceExpression();
     }
@@ -61,9 +59,15 @@ public class Sentence {
             setDeclarationsAndAssignments(c, actAssignments);
         }
 
+//        System.out.println("\nDECLARATION");
+//        condAssignments.forEach(System.out::println);
+//        actAssignments.forEach(System.out::println);
+//        actAssignments.forEach(a -> System.out.println(a.simplify()));
+
         setBiimplicationFromAssignments();
 
-        for (Expr e : sentExpression) {
+        System.out.println("\nSENTENCE");
+        for (Expr e : sentenceExpression) {
             System.out.println(e);
         }
     }
@@ -83,12 +87,43 @@ public class Sentence {
     }
 
     private void setBiimplicationFromAssignments() {
-        BoolExpr andExpression = ctx.mkAnd(condAssignments.stream().toArray(BoolExpr[]::new));
+        BoolExpr combinedCondition = (orCond) ? ctx.mkOr(condAssignments.stream().toArray(BoolExpr[]::new))
+                : ctx.mkAnd(condAssignments.stream().toArray(BoolExpr[]::new));
 
-        for (Expr e : actAssignments) {
-            BoolExpr fin = ctx.mkIff(andExpression, (BoolExpr) e);
-            sentExpression.add(fin);
+        boolean bpAction = isBPAction();
+
+        if (bpAction) {
+            setBPBiimplication(combinedCondition);
+        } else {
+            setNormalBiimplication(combinedCondition);
         }
+    }
+
+    private void setBPBiimplication(BoolExpr combinedCondition) {
+        // combine all actions into one biimplication
+        BoolExpr andActionExpression = ctx.mkAnd(actAssignments.stream().toArray(BoolExpr[]::new));
+        BoolExpr fin = ctx.mkIff(combinedCondition, andActionExpression);
+        sentenceExpression.add(fin);
+    }
+
+    private void setNormalBiimplication(BoolExpr combinedCondition) {
+        for (Expr e : actAssignments) {
+            BoolExpr fin = ctx.mkIff(combinedCondition, (BoolExpr) e);
+            sentenceExpression.add(fin);
+        }
+    }
+
+    private boolean isBPAction() {
+        boolean bpAction = false;
+
+        for (Constant c : actions) {
+            if (c.name.startsWith("blood-pressure")) {
+                bpAction = true;
+                break;
+            }
+        }
+
+        return bpAction;
     }
 
     private BoolExpr getExpressionAssignmentFromConstant(Constant c, Expr exp) {
