@@ -4,28 +4,22 @@ import com.microsoft.z3.BoolExpr;
 import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import com.microsoft.z3.IntExpr;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import cs.util.ConstantEnum;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Sentence {
     protected ArrayList<Constant> conditions, actions;
-    protected Context ctx;
-    protected HashMap<String, String> cfg;
     protected ArrayList<Expr> declarations, condAssignments, actAssignments, sentenceExpression;
     protected boolean orCond, orAct;
+    protected Context ctx;
 
-    public Sentence(ArrayList<Constant> conditions, ArrayList<Constant> actions, boolean orCond, boolean orAct) {
+    public Sentence(Context ctx, ArrayList<Constant> conditions, ArrayList<Constant> actions, boolean orCond, boolean orAct) {
+        this.ctx = ctx;
         this.conditions = conditions;
         this.actions = actions;
         this.orCond = orCond;
         this.orAct = orAct;
-
-        cfg = new HashMap<String, String>();
-        cfg.put("model", "true");
-        ctx = new Context(cfg);
 
         declarations = new ArrayList<Expr>();
         condAssignments = new ArrayList<Expr>();
@@ -36,22 +30,6 @@ public class Sentence {
     }
 
     public void getSentenceExpression() {
-        /*
-        BoolExpr ckd = ctx.mkBoolConst("ckd");
-        IntExpr acr = ctx.mkIntConst("acr");
-        BoolExpr lowCostRenin = ctx.mkBoolConst("low-cost-renin-angiotensin-aldosterone-system-antagonist");
-        BoolExpr hypertension = ctx.mkBoolConst("hypertension");
-
-        BoolExpr ckdTrue = ctx.mkEq(ckd, ctx.mkBool(true));
-        BoolExpr acr30 = ctx.mkGe(acr, ctx.mkInt(30));
-        BoolExpr hypertensionTrue = ctx.mkEq(hypertension, ctx.mkBool(true));
-        BoolExpr lowCostReninTrue = ctx.mkEq(lowCostRenin, ctx.mkBool(true));
-
-        BoolExpr andEverything = ctx.mkAnd(ckdTrue, ctx.mkAnd(acr30, ctx.mkAnd(hypertensionTrue, lowCostReninTrue)));
-
-        sent1 = ctx.mkEq(ctx.mkAnd(ckdTrue, diabetesTrue, acrGE3), lowCostReninTrue);
-         */
-
         for (Constant c : conditions) {
             setDeclarationsAndAssignments(c, condAssignments);
         }
@@ -60,12 +38,11 @@ public class Sentence {
             setDeclarationsAndAssignments(c, actAssignments);
         }
 
-//        System.out.println("\nDECLARATION");
-//        condAssignments.forEach(System.out::println);
-//        actAssignments.forEach(System.out::println);
-//        actAssignments.forEach(a -> System.out.println(a.simplify()));
-
         setBiimplicationFromAssignments();
+
+        System.out.println("\nDECLARATION (OF WAR)");
+        actAssignments.forEach(System.out::println);
+        condAssignments.forEach(System.out::println);
 
         System.out.println("\nSENTENCE");
         for (Expr e : sentenceExpression) {
