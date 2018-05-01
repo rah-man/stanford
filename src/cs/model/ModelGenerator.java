@@ -50,7 +50,8 @@ public class ModelGenerator {
     }
 
     private void runModel() {
-        model.checkModel();
+        model.printDeclarations();
+//        model.checkModel();
     }
 
     private void getFrames() {
@@ -155,5 +156,9 @@ public class ModelGenerator {
         }
 
         conditions.add(conditionList);
+    }
+
+    public Z3Model getZ3Model() {
+        return model;
     }
 }

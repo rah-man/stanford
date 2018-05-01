@@ -4,6 +4,7 @@ import com.microsoft.z3.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Z3Model {
     class TestFailedException extends Exception {
@@ -29,7 +30,7 @@ public class Z3Model {
         sentences.add(sentence);
     }
 
-    public BoolExpr andAllSentences() {
+    private BoolExpr andAllSentences() {
         ArrayList<Expr> allSent = new ArrayList<Expr>();
         for (Sentence sent : sentences) {
             allSent.addAll(sent.sentenceExpression);
@@ -75,5 +76,27 @@ public class Z3Model {
             return s.getModel();
         else
             return null;
+    }
+
+    public void printDeclarations() {
+        System.out.println("\nDECLARATIONS");
+        System.out.println(declarationsToString());
+    }
+
+    public String declarationsToString() {
+        StringBuilder sb = new StringBuilder();
+        HashSet<Expr> declarations = new HashSet<Expr>();
+
+        sentences.forEach(s -> {
+            declarations.addAll(s.declarations);
+        });
+
+        declarations.forEach(d -> sb.append(d.getFuncDecl() + "\n"));
+        sb.append("\n");
+        sentences.forEach(s -> {
+            s.sentenceExpression.forEach(sent -> sb.append(sent.toString() + "\n"));
+        });
+
+        return sb.toString();
     }
 }
