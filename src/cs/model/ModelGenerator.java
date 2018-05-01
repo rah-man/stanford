@@ -26,12 +26,11 @@ public class ModelGenerator {
     protected static final int ACTION_CONDITION = 3;
     protected static final int ACTION_OR_CONDITION = 4;
 
-
     protected CaseFramePanel[] caseFramePanels;
     protected ArrayList<ArrayList<Condition>> conditions;
     protected ArrayList<ArrayList<Action>> actions;
     protected Set<String> declarationSet, assertionSet;
-    protected ArrayList<Sentence> sentences;
+    protected Z3Model model;
 
     public ModelGenerator() {
         this(null);
@@ -43,9 +42,15 @@ public class ModelGenerator {
         actions = new ArrayList<ArrayList<Action>>();
         declarationSet = new LinkedHashSet<String>();
         assertionSet = new LinkedHashSet<String>();
-        sentences = new ArrayList<Sentence>();
+        model = new Z3Model();
 
         getFrames();
+        getConditionAndActionConstants();
+        runModel();
+    }
+
+    private void runModel() {
+        model.checkModel();
     }
 
     private void getFrames() {
@@ -53,13 +58,10 @@ public class ModelGenerator {
             getActionFrames(caseFramePanel);
             getConditionFrame(caseFramePanel);
         }
-        getConditionAndActionConstants();
 
-        System.exit(0);
-
-        declarationSet.forEach(System.out::println);
+        /*declarationSet.forEach(System.out::println);
         System.out.println();
-        assertionSet.forEach(System.out::println);
+        assertionSet.forEach(System.out::println);*/
     }
 
     private void getConditionAndActionConstants() {
@@ -83,16 +85,13 @@ public class ModelGenerator {
                 conditionList.add(constant);
 
                 declarationSet.add(constant.declareConstant());
-//                System.out.println(constant.declareConstant());
                 if (!orCond) {
                     assertionSet.add(constant.assertConstant());
-//                    System.out.println(constant.assignConstant());
                 }
             }
 
             if (orCond) {
                 assertionSet.add(ConstantFactory.assertCombineConstant("or", cons));
-//                System.out.println(ConstantFactory.assertCombineConstant("or", cons));
             }
 
             ArrayList<Action> a = actions.get(i);
@@ -109,21 +108,17 @@ public class ModelGenerator {
                 constList.addAll(Arrays.asList(ConstantFactory.generateConstant(act)));
                 for (Constant actionCons : constants) {
                     declarationSet.add(actionCons.declareConstant());
-//                    System.out.println(actionCons.declareConstant());
                     if (!orCond) {
                         assertionSet.add(actionCons.assertConstant());
-//                        System.out.println(actionCons.assignConstant());
                     }
                 }
             }
 
             if (orAct) {
                 assertionSet.add(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
-//                System.out.println(ConstantFactory.assertCombineConstant("or", constList.stream().toArray(Constant[]::new)));
             }
 
-            Sentence sentence = new Sentence(conditionList, actionList, orCond, orAct);
-            sentences.add(sentence);
+            model.buildSentence(conditionList, actionList, orCond, orAct);
         }
     }
 
