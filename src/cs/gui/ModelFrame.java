@@ -4,12 +4,13 @@ import cs.model.ModelGenerator;
 import cs.model.Z3Model;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class ModelFrame extends JFrame {
-    protected javax.swing.JButton checkModelButton;
-    protected javax.swing.JButton addSentenceButton;
-    protected javax.swing.JEditorPane editorPane;
-    protected javax.swing.JScrollPane editorScrollPane;
+    protected JButton checkModelButton;
+    protected JButton addSentenceButton;
+    protected JEditorPane editorPane;
+    protected JScrollPane editorScrollPane;
 
     protected Z3Model model;
 
@@ -19,35 +20,36 @@ public class ModelFrame extends JFrame {
     }
 
     private void initComponents() {
-        editorScrollPane = new javax.swing.JScrollPane();
-        editorPane = new javax.swing.JEditorPane();
-        checkModelButton = new javax.swing.JButton();
-        addSentenceButton = new javax.swing.JButton();
+        editorScrollPane = new JScrollPane();
+        editorPane = new JEditorPane();
+        checkModelButton = new JButton();
+        addSentenceButton = new JButton();
 
         editorPane.setText(model.declarationsToString());
         editorPane.setEditable(false);
         editorScrollPane.setViewportView(editorPane);
         checkModelButton.setText("Check Model");
-        addSentenceButton.setText("Add Sentence");
+        addSentenceButton.setText("Add Formula");
+        addSentenceButton.addActionListener(e -> addSentenceButtonActionPerformed(e));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(editorScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addComponent(editorScrollPane, GroupLayout.DEFAULT_SIZE, 751, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(addSentenceButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(checkModelButton)
                                 .addGap(8, 8, 8))
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(editorScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(editorScrollPane, GroupLayout.PREFERRED_SIZE, 345, GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                         .addComponent(checkModelButton)
                                         .addComponent(addSentenceButton))
                                 .addGap(0, 21, Short.MAX_VALUE))
@@ -57,6 +59,12 @@ public class ModelFrame extends JFrame {
         setVisible(true);
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    private void addSentenceButtonActionPerformed(ActionEvent e) {
+        NewFormulaPanel newFormulaPanel = new NewFormulaPanel(this);
+        newFormulaPanel.createAndShowGUI();
+//        setVisible(false);
     }
 }
