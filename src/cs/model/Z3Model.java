@@ -30,6 +30,11 @@ public class Z3Model {
         sentences.add(sentence);
     }
 
+    public void buildSentence(String modelAsSentence) {
+        Sentence sentence = new Sentence(ctx, modelAsSentence);
+        sentences.add(sentence);
+    }
+
     private BoolExpr andAllSentences() {
         ArrayList<Expr> allSent = new ArrayList<Expr>();
         for (Sentence sent : sentences) {

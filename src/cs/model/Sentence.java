@@ -7,10 +7,13 @@ import com.microsoft.z3.IntExpr;
 import cs.util.ConstantEnum;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Stack;
 
 public class Sentence {
     protected ArrayList<Constant> conditions, actions;
     protected ArrayList<Expr> declarations, condAssignments, actAssignments, sentenceExpression;
+    protected String modelAsSentence;
     protected boolean orCond, orAct;
     protected Context ctx;
 
@@ -29,6 +32,10 @@ public class Sentence {
         getSentenceExpression();
     }
 
+    public Sentence(Context ctx, String modelAsSentence) {
+        this.modelAsSentence = modelAsSentence;
+    }
+
     public void getSentenceExpression() {
         for (Constant c : conditions) {
             setDeclarationsAndAssignments(c, condAssignments);
@@ -44,10 +51,7 @@ public class Sentence {
 //        actAssignments.forEach(System.out::println);
 //        condAssignments.forEach(System.out::println);
 
-        System.out.println("\nSENTENCE");
-        for (Expr e : sentenceExpression) {
-            System.out.println(e);
-        }
+//
     }
 
     private void setDeclarationsAndAssignments(Constant c, ArrayList<Expr> list) {
@@ -130,5 +134,102 @@ public class Sentence {
         }
 
         return assignExpr;
+    }
+
+    private Stack<NameValueTree> buildFromSentenceModel() {
+        Scanner sc = new Scanner(modelAsSentence);
+        Stack<String> parenthesis = null;
+        Stack<String> operator = null;
+        Stack<NameValue> nameValueStack = null;
+        Stack<NameValueTree> treeStack = null;
+
+        while (sc.hasNextLine()) {
+            boolean afterLeftPar = false;
+            parenthesis = new Stack<String>();
+            operator = new Stack<String>();
+            nameValueStack = new Stack<NameValue>();
+            treeStack = new Stack<NameValueTree>();
+
+            String line = sc.nextLine().trim();
+
+            for (int i = 0; i < line.length(); ) {
+                char letter = line.charAt(i);
+
+                if (letter == '(') {
+                    parenthesis.push(Character.toString(letter));
+                    i++;
+                    afterLeftPar = true;
+                    continue;
+                }
+
+                if (letter == ' ') {
+                    i++;
+                    continue;
+                }
+
+                if (letter != ' ' && afterLeftPar) {
+                    int opsIndex = operatorIndex(i, line);
+                    operator.push(line.substring(i, opsIndex));
+                    i = opsIndex;
+                    afterLeftPar = false;
+                    continue;
+                }
+
+                if (letter != ' ' && letter != ')' && !afterLeftPar) {
+                    int entityIndex = entityIndex(i, line);
+                    String[] nameValue = line.substring(i, entityIndex).split(" ");
+                    NameValue nv = new NameValue(nameValue[0].trim(), nameValue[1].trim());
+                    nameValueStack.push(nv);
+                    i = entityIndex;
+                    continue;
+                }
+
+                if (letter == ')') {
+                    parenthesis.pop();
+                    String ops = operator.pop();
+
+                    if (!ops.equals("and") && !ops.equals("or")) {
+                        NameValue entity = nameValueStack.pop();
+                        entity.mod = ops;
+                        nameValueStack.push(entity);
+                        i++;
+                    } else {
+                        NameValueTree sub = (treeStack.empty()) ? null : treeStack.pop();
+                        NameValueTree tree = new NameValueTree(ops, nameValueStack, sub);
+                        treeStack.push(tree);
+                        i++;
+                    }
+
+                    if (parenthesis.empty()) {
+                        // make context here, because if there's a newline, the current information will be lost
+                        break;
+                    }
+                    continue;
+                }
+            }
+        }
+
+        System.out.println("\nTREE:");
+        treeStack.forEach(System.out::println);
+
+        return treeStack;
+    }
+
+    private int operatorIndex(int i, String line) {
+        for (int j = i; ; j++) {
+            char c = line.charAt(j);
+            if (c == ' ' || c == '(') {
+                return j;
+            }
+        }
+    }
+
+    private int entityIndex(int i, String line) {
+        for (int j = i; ; j++) {
+            char c = line.charAt(j);
+            if (c == ')') {
+                return j;
+            }
+        }
     }
 }

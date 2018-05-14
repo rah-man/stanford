@@ -65,9 +65,7 @@ public class NewFormulaPanel extends JPanel {
     }
 
     private void saveFormula(ActionEvent e) {
-        System.out.println(editorPane.getText());
-
-        StringBuilder sb = new StringBuilder(parent.editorPane.getText());
+        StringBuilder sb = new StringBuilder(parent.model.declarationsToString());
         sb.append("\n" + editorPane.getText());
         parent.editorPane.setText(sb.toString());
 

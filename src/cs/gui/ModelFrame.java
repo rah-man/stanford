@@ -1,10 +1,13 @@
 package cs.gui;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import cs.model.ModelGenerator;
 import cs.model.Z3Model;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.Scanner;
 
 public class ModelFrame extends JFrame {
     protected JButton checkModelButton;
@@ -30,7 +33,8 @@ public class ModelFrame extends JFrame {
         editorScrollPane.setViewportView(editorPane);
         checkModelButton.setText("Check Model");
         addSentenceButton.setText("Add Formula");
-        addSentenceButton.addActionListener(e -> addSentenceButtonActionPerformed(e));
+        checkModelButton.addActionListener(e -> checkModel(e));
+        addSentenceButton.addActionListener(e -> openNewFormulaPanel(e));
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -62,9 +66,27 @@ public class ModelFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    private void addSentenceButtonActionPerformed(ActionEvent e) {
+    private void openNewFormulaPanel(ActionEvent e) {
         NewFormulaPanel newFormulaPanel = new NewFormulaPanel(this);
         newFormulaPanel.createAndShowGUI();
 //        setVisible(false);
+    }
+
+    private void checkModel(ActionEvent e) {
+        String originalText = model.declarationsToString().trim();
+        String newText = editorPane.getText().trim().replaceAll("\\r", "");
+
+        String diff = StringUtils.difference(originalText, newText).trim();
+        Scanner scanner = new Scanner(diff);
+        int i = 0;
+        while (scanner.hasNextLine()) {
+            System.out.println(++i + "\t" + scanner.nextLine());
+        }
+
+        model.checkModel();
+    }
+
+    public static void main(String[] args) {
+
     }
 }

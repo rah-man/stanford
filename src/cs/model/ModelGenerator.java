@@ -50,7 +50,7 @@ public class ModelGenerator {
     }
 
     private void runModel() {
-        model.printDeclarations();
+//        model.printDeclarations();
 //        model.checkModel();
     }
 
