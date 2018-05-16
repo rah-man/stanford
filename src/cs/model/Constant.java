@@ -57,11 +57,12 @@ public class Constant<E> {
 
     protected String getType() {
         String type = "Int";
-        System.out.println("NAME=" + name + ", VALUE=" + value);
-        if (value instanceof Boolean || !StringUtils.isNumeric(((String) value).toLowerCase())) {
+        if (value instanceof Boolean) {
             type = "Bool";
         } else if (value instanceof Integer) {
             type = "Int";
+        } else if (!StringUtils.isNumeric(((String) value).toLowerCase())) {
+            type = "Bool";
         }
 
         return type;

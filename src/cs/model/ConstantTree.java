@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class ConstantTree {
-    public String conjunctor;
+    public String connector;
     public ArrayList<Constant> kids = new ArrayList<Constant>();
     public ConstantTree subTree;
 
 
-    public ConstantTree(String conjunctor, Stack<Constant> nvStack, ConstantTree subTree) {
-        this.conjunctor = conjunctor;
-        while (!nvStack.empty()) {
-            kids.add(nvStack.pop());
+    public ConstantTree(String conjunctor, Stack<Constant> constants, ConstantTree subTree) {
+        this.connector = conjunctor;
+        while (!constants.empty()) {
+            kids.add(constants.pop());
         }
         this.subTree = subTree;
     }
 
     public String toString() {
-        String ret = conjunctor + "\n";
+        String ret = connector + "\n";
         for (Constant nv : kids) {
             ret += "\tKIDS" + nv + "\n";
         }

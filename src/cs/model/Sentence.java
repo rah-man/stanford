@@ -5,6 +5,7 @@ import com.microsoft.z3.Context;
 import com.microsoft.z3.Expr;
 import com.microsoft.z3.IntExpr;
 import cs.util.ConstantEnum;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -33,7 +34,11 @@ public class Sentence {
     }
 
     public Sentence(Context ctx, String modelAsSentence) {
+        this.ctx = ctx;
         this.modelAsSentence = modelAsSentence;
+        sentenceExpression = new ArrayList<Expr>();
+
+        buildFromSentenceModel();
     }
 
     public void getSentenceExpression() {
@@ -55,6 +60,10 @@ public class Sentence {
     }
 
     private void setDeclarationsAndAssignments(Constant c, ArrayList<Expr> list) {
+        list.add(createExpression(c));
+    }
+
+    private Expr createExpression(Constant c) {
         Expr exp = null;
 
         if (c.getType().equals("Bool")) {
@@ -63,9 +72,12 @@ public class Sentence {
             exp = ctx.mkIntConst(c.name);
         }
 
+        if (declarations != null) {
+            declarations.add(exp);
+        }
         BoolExpr assignExp = getExpressionAssignmentFromConstant(c, exp);
-        declarations.add(exp);
-        list.add(assignExp);
+
+        return assignExp;
     }
 
     private void setBiimplicationFromAssignments() {
@@ -121,8 +133,13 @@ public class Sentence {
         BoolExpr assignExpr = null;
 
         if (c.getMod().equals(ConstantEnum.EQ)) {
+            boolean booleanValue = false;
+            if (isBooleanValue(c)) {
+                booleanValue = getBooleanValue(c);
+            }
+
             assignExpr = (exp instanceof BoolExpr) ?
-                    (ctx.mkEq(exp, ctx.mkBool((Boolean) c.value))) : (ctx.mkEq(exp, ctx.mkInt((Integer) c.value)));
+                    (ctx.mkEq(exp, ctx.mkBool(booleanValue))) : (ctx.mkEq(exp, ctx.mkInt((Integer) c.value)));
         } else if (c.getMod().equals(ConstantEnum.GT)) {
             assignExpr = ctx.mkGt((IntExpr) exp, ctx.mkInt((Integer) c.value));
         } else if (c.getMod().equals(ConstantEnum.GTE)) {
@@ -136,19 +153,39 @@ public class Sentence {
         return assignExpr;
     }
 
-    private Stack<NameValueTree> buildFromSentenceModel() {
+    private boolean isBooleanValue(Constant c) {
+        boolean aBoolean = false;
+        if (c.value instanceof Boolean) {
+            aBoolean = true;
+        } else if (c.value instanceof Integer) {
+            aBoolean = false;
+        } else if (!StringUtils.isNumeric(((String) c.value).toLowerCase())) {
+            aBoolean = true;
+        }
+        return aBoolean;
+    }
+
+    private boolean getBooleanValue(Constant c) {
+        if (c.value instanceof Boolean) {
+            return (boolean) c.value;
+        } else {
+            return Boolean.parseBoolean((String) c.value);
+        }
+    }
+
+    private void buildFromSentenceModel() {
         Scanner sc = new Scanner(modelAsSentence);
         Stack<String> parenthesis = null;
         Stack<String> operator = null;
-        Stack<NameValue> nameValueStack = null;
-        Stack<NameValueTree> treeStack = null;
+        Stack<Constant> constantStack = null;
+        Stack<ConstantTree> constantTree = null;
 
         while (sc.hasNextLine()) {
             boolean afterLeftPar = false;
             parenthesis = new Stack<String>();
             operator = new Stack<String>();
-            nameValueStack = new Stack<NameValue>();
-            treeStack = new Stack<NameValueTree>();
+            constantStack = new Stack<Constant>();
+            constantTree = new Stack<ConstantTree>();
 
             String line = sc.nextLine().trim();
 
@@ -178,8 +215,8 @@ public class Sentence {
                 if (letter != ' ' && letter != ')' && !afterLeftPar) {
                     int entityIndex = entityIndex(i, line);
                     String[] nameValue = line.substring(i, entityIndex).split(" ");
-                    NameValue nv = new NameValue(nameValue[0].trim(), nameValue[1].trim());
-                    nameValueStack.push(nv);
+                    Constant nv = new Constant(nameValue[0].trim(), nameValue[1].trim());
+                    constantStack.push(nv);
                     i = entityIndex;
                     continue;
                 }
@@ -189,30 +226,56 @@ public class Sentence {
                     String ops = operator.pop();
 
                     if (!ops.equals("and") && !ops.equals("or")) {
-                        NameValue entity = nameValueStack.pop();
+                        Constant entity = constantStack.pop();
                         entity.mod = ops;
-                        nameValueStack.push(entity);
+                        constantStack.push(entity);
                         i++;
                     } else {
-                        NameValueTree sub = (treeStack.empty()) ? null : treeStack.pop();
-                        NameValueTree tree = new NameValueTree(ops, nameValueStack, sub);
-                        treeStack.push(tree);
+                        ConstantTree sub = (constantTree.empty()) ? null : constantTree.pop();
+                        ConstantTree tree = new ConstantTree(ops, constantStack, sub);
+                        constantTree.push(tree);
                         i++;
                     }
 
                     if (parenthesis.empty()) {
-                        // make context here, because if there's a newline, the current information will be lost
                         break;
                     }
                     continue;
                 }
             }
+
+            if (!constantStack.isEmpty()) {
+                System.out.println("ConstantStack");
+                constantStack.forEach(System.out::println);
+                constantStack.forEach(c -> {
+                    sentenceExpression.add(createExpression(c));
+                });
+            }
+
+            if (!constantTree.isEmpty()) {
+                System.out.println("TreeStack");
+                constantTree.forEach(System.out::println);
+                buildModelFromTree(constantTree);
+            }
+        }
+    }
+
+    private void buildModelFromTree(Stack<ConstantTree> constantTree){
+        ConstantTree cTree = constantTree.pop();
+        String connector = cTree.connector;
+        ArrayList<Constant> kids = cTree.kids;
+        ArrayList<Expr> kidsExpression = new ArrayList<Expr>();
+
+        for (Constant c : kids) {
+            Expr e = createExpression(c);
+            kidsExpression.add(e);
         }
 
-        System.out.println("\nTREE:");
-        treeStack.forEach(System.out::println);
+        BoolExpr combinedSentence = connector.equals("and")
+                ? ctx.mkAnd(kidsExpression.stream().toArray(BoolExpr[]::new))
+                : ctx.mkOr(kidsExpression.stream().toArray(BoolExpr[]::new));
 
-        return treeStack;
+        sentenceExpression.add(combinedSentence);
     }
 
     private int operatorIndex(int i, String line) {

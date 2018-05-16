@@ -78,9 +78,11 @@ public class ModelFrame extends JFrame {
 
         String diff = StringUtils.difference(originalText, newText).trim();
         Scanner scanner = new Scanner(diff);
-        int i = 0;
+//        int i = 0;
         while (scanner.hasNextLine()) {
-            System.out.println(++i + "\t" + scanner.nextLine());
+            String line = scanner.nextLine();
+//            System.out.println(++i + "\t" + line);
+            model.buildSentence(line);
         }
 
         model.checkModel();
