@@ -8,6 +8,7 @@ import cs.util.ConstantEnum;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -215,7 +216,7 @@ public class Sentence {
                 if (letter != ' ' && letter != ')' && !afterLeftPar) {
                     int entityIndex = entityIndex(i, line);
                     String[] nameValue = line.substring(i, entityIndex).split(" ");
-                    Constant nv = new Constant(nameValue[0].trim(), nameValue[1].trim());
+                    Constant nv = makeConstant(nameValue);
                     constantStack.push(nv);
                     i = entityIndex;
                     continue;
@@ -245,37 +246,65 @@ public class Sentence {
             }
 
             if (!constantStack.isEmpty()) {
-                System.out.println("ConstantStack");
-                constantStack.forEach(System.out::println);
-                constantStack.forEach(c -> {
+//                System.out.println("NameValueStack");
+//                constantStack.forEach(System.out::println);
+                for (Constant c : constantStack) {
                     sentenceExpression.add(createExpression(c));
-                });
+                }
             }
 
             if (!constantTree.isEmpty()) {
-                System.out.println("TreeStack");
-                constantTree.forEach(System.out::println);
+//                System.out.println("TreeStack");
+//                constantTree.forEach(System.out::println);
                 buildModelFromTree(constantTree);
             }
         }
     }
 
-    private void buildModelFromTree(Stack<ConstantTree> constantTree){
-        ConstantTree cTree = constantTree.pop();
-        String connector = cTree.connector;
-        ArrayList<Constant> kids = cTree.kids;
-        ArrayList<Expr> kidsExpression = new ArrayList<Expr>();
+    private Constant makeConstant(String[] nameValue){
+        Constant cons;
+        String name = nameValue[0].trim();
+        String value = nameValue[1].trim();
 
-        for (Constant c : kids) {
-            Expr e = createExpression(c);
-            kidsExpression.add(e);
+        if(!StringUtils.isNumeric(((String) value).toLowerCase())){
+            cons = new Constant(name, Boolean.parseBoolean(value));
+        }else{
+            cons = new Constant(name, Integer.parseInt(value));
         }
 
-        BoolExpr combinedSentence = connector.equals("and")
-                ? ctx.mkAnd(kidsExpression.stream().toArray(BoolExpr[]::new))
-                : ctx.mkOr(kidsExpression.stream().toArray(BoolExpr[]::new));
+        return cons;
+    }
 
-        sentenceExpression.add(combinedSentence);
+    private void buildModelFromTree(Stack<ConstantTree> constantTree){
+        ConstantTree root = constantTree.peek();
+        LinkedList<ConstantTree> treeList = new LinkedList<ConstantTree>();
+        treeList.add(root);
+        while(root.subTree != null){
+            treeList.addFirst(root.subTree);
+            root = root.subTree;
+        }
+
+        ArrayList<Expr> kidsExpression = new ArrayList<Expr>();
+
+        for(ConstantTree cTree : treeList){
+            String connector = cTree.connector;
+            ArrayList<Constant> kids = cTree.kids;
+
+            for (Constant c : kids) {
+                Expr e = createExpression(c);
+                kidsExpression.add(e);
+//                System.out.println("EXPRESSION= " + e);
+            }
+
+            BoolExpr combinedSentence = connector.equals("and")
+                    ? ctx.mkAnd(kidsExpression.stream().toArray(BoolExpr[]::new))
+                    : ctx.mkOr(kidsExpression.stream().toArray(BoolExpr[]::new));
+            kidsExpression.clear();
+            kidsExpression.add(combinedSentence);
+//            System.out.println("COMBINED SENTENCE= " + combinedSentence);
+        }
+
+        sentenceExpression.add(kidsExpression.get(0));
     }
 
     private int operatorIndex(int i, String line) {
